@@ -61,5 +61,5 @@ jobs:
           key: ${{ secrets.AWS_EC2_SSH_KEY }}
           script: |
             sudo systemctl stop tomcat
-            sudo cp /home/ubuntu/tomcat/my-artifact.war /home/apps/tomcat/webapps
+            sudo cp /home/ubuntu/tomcat/github/workspace/target/final-project-0.0.1-SNAPSHOT.war /home/apps/tomcat/webapps/build.war
             sudo systemctl start tomcat
