@@ -23,8 +23,7 @@ jobs:
           key: ${{ secrets.AWS_EC2_SSH_KEY }}
           source: ".github/workflows/build.yml"
           target: "/home/ubuntu/tomcat"
-          overwrite: false
-
+         
       - name: SSH into EC2 instance and deploy
         uses: appleboy/ssh-action@master
         with:
