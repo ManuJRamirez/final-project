@@ -27,7 +27,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: my-artifact
-          path: target/my-artifact.war
+          path: /github/workspace/my-artifact.war
 
   deploy:
     name: Deploy to AWS EC2
@@ -42,7 +42,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: my-artifact
-          path: target/my-artifact.war
+          path: /github/workspace/my-artifact.war
 
       - name: Upload artifact to AWS EC2
         uses: appleboy/scp-action@master
