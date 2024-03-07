@@ -27,7 +27,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: final-project-0.0.1-SNAPSHOT
-          path: /home/runner/work/final-project/final-project/target/final-project-0.0.1-SNAPSHOT.war
+          path: /home/runner/work/final-project/final-project/target/
 
   deploy:
     name: Deploy to AWS EC2
@@ -42,7 +42,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: final-project-0.0.1-SNAPSHOT
-          path: /home/runner/work/final-project/final-project/target/final-project-0.0.1-SNAPSHOT.war
+          path: /home/runner/work/final-project/final-project/target/
 
       - name: Upload artifact to AWS EC2
         uses: appleboy/scp-action@master
