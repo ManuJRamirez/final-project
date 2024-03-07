@@ -41,7 +41,7 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
-          name: my-artifact.war
+          name: my-artifact
           path: /github/workspace/target
 
       - name: Upload artifact to AWS EC2
@@ -50,7 +50,7 @@ jobs:
           host: ${{ secrets.AWS_EC2_HOST }}
           username: ${{ secrets.AWS_EC2_USERNAME }}
           key: ${{ secrets.AWS_EC2_SSH_KEY }}
-          source: "/github/workspace/target"
+          source: "/github/workspace/target/my-artifact.war"
           target: "/home/ubuntu/tomcat"
          
       - name: SSH into EC2 instance and deploy
