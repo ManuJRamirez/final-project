@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import com.wallaclone.finalproject.dto.PruebaDto;
 import com.wallaclone.finalproject.repository.PruebaRepository;
 import com.wallaclone.finalproject.service.SaludoService;
-
+//prueba
 @Service
 public class SaludoServiceImpl implements SaludoService {
 	
