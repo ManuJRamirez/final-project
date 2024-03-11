@@ -1,5 +1,6 @@
 package com.wallaclone.finalproject;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -49,16 +50,14 @@ public class FinalProjectApplication {
 	@Bean
 	public Properties appProperties() throws IOException {
 		Properties properties = new Properties();
-		String externalPropertiesFile = "/home/apps/tomcat/properties/application.properties";
-		Resource externalResource = new ClassPathResource(externalPropertiesFile);
-		if (externalResource.exists()) {
-			properties.load(externalResource.getInputStream());
-		}
-
-		if (properties.isEmpty()) {
+		try {
+			String externalPropertiesFile = "/home/apps/tomcat/properties/application.properties";
+			FileInputStream externalResource = new FileInputStream(externalPropertiesFile);
+			properties.load(externalResource);
+			System.out.println("properties " + properties.getProperty("spring.datasource.url"));
+		} catch (Exception e) {
 			Resource internalResource = new ClassPathResource("application.properties");
 			properties.load(internalResource.getInputStream());
-			System.out.println("properties "+properties.getProperty("spring.datasource.url"));
 		}
 
 		return properties;
