@@ -7,14 +7,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "imagenes")
-public class Imagenes {
+@Table(name = "anuncios_tags")
+public class AnuncioTags {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 
 	private Long id;
-	private int idAnuncio;
-	private byte[] imagen;
+	private int idAnuncios;
+	private int idCategoria;
 
 	public Long getId() {
 		return id;
@@ -24,19 +24,20 @@ public class Imagenes {
 		this.id = id;
 	}
 
-	public int getIdAnuncio() {
-		return idAnuncio;
+	public int getIdAnuncios() {
+		return idAnuncios;
 	}
 
-	public void setIdAnuncio(int idAnuncio) {
-		this.idAnuncio = idAnuncio;
+	public void setIdAnuncios(int idAnuncios) {
+		this.idAnuncios = idAnuncios;
 	}
 
-	public byte[] getImagen() {
-		return imagen;
+	public int getIdCategoria() {
+		return idCategoria;
 	}
 
-	public void setImagen(byte[] imagen) {
-		this.imagen = imagen;
+	public void setIdCategoria(int idCategoria) {
+		this.idCategoria = idCategoria;
 	}
+
 }

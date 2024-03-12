@@ -1,6 +1,6 @@
 package com.wallaclone.finalproject.dto;
 
-public class AnunciosTagsDto {
+public class AnuncioTagsDto {
 	private int idAnuncios;
 	private int idCategoria;
 

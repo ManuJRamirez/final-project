@@ -1,6 +1,6 @@
 package com.wallaclone.finalproject.dto;
 
-public class ImagenesDto {
+public class ImagenDto {
 	private int idAnuncio;
 	private byte[] imagen;
 

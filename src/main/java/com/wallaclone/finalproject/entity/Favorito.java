@@ -8,7 +8,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "favoritos")
-public class Favoritos {
+public class Favorito {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 

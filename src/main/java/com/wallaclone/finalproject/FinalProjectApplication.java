@@ -51,14 +51,9 @@ public class FinalProjectApplication {
 	public Properties appProperties() throws IOException {
 		Properties properties = new Properties();
 		try {
-			// String externalPropertiesFile =
-			// "/home/apps/tomcat/webapps/properties/application.properties";
-			// FileInputStream externalResource = new
-			// FileInputStream(externalPropertiesFile);
 			InputStream externalResource = this.getClass().getClassLoader()
 					.getResourceAsStream("application.properties");
 			properties.load(externalResource);
-			System.out.println("properties " + properties.getProperty("spring.datasource.url"));
 		} catch (Exception e) {
 			Resource internalResource = new ClassPathResource("application.properties");
 			properties.load(internalResource.getInputStream());

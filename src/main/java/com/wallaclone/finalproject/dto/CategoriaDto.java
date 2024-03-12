@@ -1,6 +1,6 @@
 package com.wallaclone.finalproject.dto;
 
-public class CategoriasDto {
+public class CategoriaDto {
 	private String nombre;
 
 	public String getNombre() {

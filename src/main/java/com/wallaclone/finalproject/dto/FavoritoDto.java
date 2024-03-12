@@ -1,6 +1,6 @@
 package com.wallaclone.finalproject.dto;
 
-public class FavoritosDto {
+public class FavoritoDto {
 	private int idUsuario;
 	private int idAnuncio;
 

@@ -3,9 +3,9 @@ package com.wallaclone.finalproject.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.wallaclone.finalproject.entity.Favoritos;
+import com.wallaclone.finalproject.entity.Favorito;
 
 @Repository
-public interface FavoritosRepository extends JpaRepository<Favoritos, Long> {
+public interface FavoritosRepository extends JpaRepository<Favorito, Long> {
 
 }
