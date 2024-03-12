@@ -2,9 +2,12 @@ package com.wallaclone.finalproject.dto;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 public class UsuarioDto {
 	private String nombre;
 	private String apellidos;
+	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private Date fechaNacimiento;
 	private String email;
 	private String contrasenia;
