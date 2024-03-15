@@ -19,10 +19,10 @@ public class UsuariosServiceImpl implements UsuariosService {
 
 	@Autowired
 	ModelMapper modelMapper;
-	
+
 	@Autowired
 	PasswordEncoder passwordEncoder;
-	
+
 	@Override
 	public SignUpResponseDto signUp(UsuarioDto signUpBodyDto) throws Exception {
 
