@@ -18,14 +18,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.wallaclone.finalproject.service.impl.OurUserDetailsService;
+import com.wallaclone.finalproject.service.impl.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     @Autowired
-    private OurUserDetailsService ourUserDetailsService;
+    private CustomUserDetailsService customUserDetailsService;
     @Autowired
     private JWTAuthFIlter jwtAuthFIlter;
 
@@ -48,7 +48,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setUserDetailsService(ourUserDetailsService);
+        daoAuthenticationProvider.setUserDetailsService(customUserDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return daoAuthenticationProvider;
     }

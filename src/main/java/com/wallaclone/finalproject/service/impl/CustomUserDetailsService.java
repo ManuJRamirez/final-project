@@ -9,12 +9,13 @@ import org.springframework.stereotype.Service;
 import com.wallaclone.finalproject.repository.UsuariosRepository;
 
 @Service
-public class OurUserDetailsService implements UserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    private UsuariosRepository usuariosRepository;
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return usuariosRepository.findByEmail(username).orElseThrow();
-    }
+	@Autowired
+	UsuariosRepository usuariosRepository;
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		return usuariosRepository.findByEmail(username).orElseThrow();
+	}
 }

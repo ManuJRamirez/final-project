@@ -2,7 +2,7 @@ package com.wallaclone.finalproject.dto;
 
 import java.util.Date;
 
-public class AnuncioDto {
+public class ResponseAnuncioDto {
 	private String titulo;
 	private String descripcion;
 	private double precio;

@@ -11,7 +11,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 
-public class UsuarioDto {
+public class RequestSignupDto {
 	@Valid
 	@NotBlank(message = "El nombre no puede estar en blanco")
 	private String nombre;
@@ -32,10 +32,10 @@ public class UsuarioDto {
 	@Valid
 	@Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=.,!-_?])(?=\\S+$).{6,}$", message = "Contraseña inválida")
 	private String contrasenia;
+
 	private boolean notificacion;
+
 	private byte[] imgPerfil;
-	private String token;
-	private String role;
 
 	public String getNombre() {
 		return nombre;
@@ -91,22 +91,6 @@ public class UsuarioDto {
 
 	public void setImgPerfil(byte[] imgPerfil) {
 		this.imgPerfil = imgPerfil;
-	}
-
-	public String getToken() {
-		return token;
-	}
-
-	public void setToken(String token) {
-		this.token = token;
-	}
-
-	public String getRole() {
-		return role;
-	}
-
-	public void setRole(String role) {
-		this.role = role;
 	}
 
 }
