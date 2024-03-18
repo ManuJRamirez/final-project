@@ -7,7 +7,7 @@ public class AnuncioDto {
 	private String descripcion;
 	private double precio;
 	private boolean transacion;
-	private int idUsuario;
+	private String emailCreador;
 	private Date fechaCreacion;
 	private boolean reservado;
 	private boolean vendido;
@@ -44,12 +44,12 @@ public class AnuncioDto {
 		this.transacion = transacion;
 	}
 
-	public int getIdUsuario() {
-		return idUsuario;
+	public String getEmailCreador() {
+		return emailCreador;
 	}
 
-	public void setIdUsuario(int idUsuario) {
-		this.idUsuario = idUsuario;
+	public void setEmailCreador(String emailCreador) {
+		this.emailCreador = emailCreador;
 	}
 
 	public Date getFechaCreacion() {

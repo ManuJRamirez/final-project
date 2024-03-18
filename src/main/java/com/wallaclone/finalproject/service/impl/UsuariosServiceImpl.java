@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.wallaclone.finalproject.dto.LoginResponseDto;
 import com.wallaclone.finalproject.dto.SignUpResponseDto;
 import com.wallaclone.finalproject.dto.UsuarioDto;
 import com.wallaclone.finalproject.entity.Usuario;

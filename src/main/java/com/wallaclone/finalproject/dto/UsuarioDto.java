@@ -34,6 +34,8 @@ public class UsuarioDto {
 	private String contrasenia;
 	private boolean notificacion;
 	private byte[] imgPerfil;
+	private String token;
+	private String role;
 
 	public String getNombre() {
 		return nombre;
@@ -89,6 +91,22 @@ public class UsuarioDto {
 
 	public void setImgPerfil(byte[] imgPerfil) {
 		this.imgPerfil = imgPerfil;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 }

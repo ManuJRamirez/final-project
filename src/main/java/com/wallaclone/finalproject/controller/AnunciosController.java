@@ -15,7 +15,7 @@ public class AnunciosController {
 	@Autowired
 	AnunciosService anunciosService;
 
-	@GetMapping("/anuncios")
+	@GetMapping("/public/anuncios")
 	public List<AnuncioDto> getAnuncios() {
 		return anunciosService.getAnuncios();
 	}
