@@ -3,6 +3,7 @@ package com.wallaclone.finalproject.dto;
 import java.util.Date;
 
 public class ResponseAnuncioDto {
+	private int id;
 	private String titulo;
 	private String descripcion;
 	private double precio;
@@ -11,6 +12,15 @@ public class ResponseAnuncioDto {
 	private Date fechaCreacion;
 	private boolean reservado;
 	private boolean vendido;
+
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	public String getTitulo() {
 		return titulo;

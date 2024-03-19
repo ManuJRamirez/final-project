@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.wallaclone.finalproject.dto.ResponseAnuncioDto;
+import com.wallaclone.finalproject.entity.Anuncio;
 import com.wallaclone.finalproject.entity.Usuario;
 import com.wallaclone.finalproject.repository.AnunciosRepository;
 import com.wallaclone.finalproject.repository.UsuariosRepository;
@@ -37,7 +38,11 @@ public class AnunciosServiceImpl implements AnunciosService {
 
 	@Override
 	public ResponseAnuncioDto getAnuncio(String id) {
-		return modelMapper.map(anunciosRepository.findById(Long.valueOf(id)).get(), ResponseAnuncioDto.class);
+		Anuncio anuncio = anunciosRepository.findById(Long.valueOf(id)).get();
+		ResponseAnuncioDto responseAnuncioDto = modelMapper.map(anuncio, ResponseAnuncioDto.class);
+		Optional<Usuario> usuario = usuarioRepository.findById((long) anuncio.getIdUsuario()); 		
+		responseAnuncioDto.setEmailCreador(usuario.get().getEmail());
+		return responseAnuncioDto;
 	}
 
 }
