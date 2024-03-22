@@ -13,8 +13,8 @@ public class AnuncioTags {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 
 	private Long id;
-	private int idAnuncios;
-	private int idCategoria;
+	private int idAnuncio;
+	private Long idCategoria;
 
 	public Long getId() {
 		return id;
@@ -24,19 +24,19 @@ public class AnuncioTags {
 		this.id = id;
 	}
 
-	public int getIdAnuncios() {
-		return idAnuncios;
+	public int getIdAnuncio() {
+		return idAnuncio;
 	}
 
-	public void setIdAnuncios(int idAnuncios) {
-		this.idAnuncios = idAnuncios;
+	public void setIdAnuncio(int idAnuncio) {
+		this.idAnuncio = idAnuncio;
 	}
 
-	public int getIdCategoria() {
+	public Long getIdCategoria() {
 		return idCategoria;
 	}
 
-	public void setIdCategoria(int idCategoria) {
+	public void setIdCategoria(Long idCategoria) {
 		this.idCategoria = idCategoria;
 	}
 

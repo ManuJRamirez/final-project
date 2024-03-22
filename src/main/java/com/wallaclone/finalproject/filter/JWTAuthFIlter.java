@@ -34,15 +34,15 @@ public class JWTAuthFIlter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 		final String authHeader = request.getHeader(ApplicationConstants.AUTHORIZATION_HEADER);
 		final String jwtToken;
-		final String userEmail;
+		final String userApodo;
 		if (authHeader == null || authHeader.isBlank()) {
 			filterChain.doFilter(request, response);
 			return;
 		}
 		jwtToken = authHeader.substring(7);
-		userEmail = jwtUtils.extractUsername(jwtToken);
-		if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-			UserDetails userDetails = customUserDetailsService.loadUserByUsername(userEmail);
+		userApodo = jwtUtils.extractUsername(jwtToken);
+		if (userApodo != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+			UserDetails userDetails = customUserDetailsService.loadUserByUsername(userApodo);
 
 			if (jwtUtils.isTokenValid(jwtToken, userDetails)) {
 				SecurityContext securityContext = SecurityContextHolder.createEmptyContext();

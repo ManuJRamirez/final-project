@@ -22,6 +22,7 @@ public class Usuario implements UserDetails{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 
 	private Long id;
+	private String apodo;
 	private String nombre;
 	private String apellidos;
 	private Date fechaNacimiento;
@@ -36,10 +37,9 @@ public class Usuario implements UserDetails{
         return List.of(new SimpleGrantedAuthority(role));
     }
 
-
     @Override
     public String getUsername() {
-        return email;
+        return apodo;
     }
 
     @Override
@@ -61,6 +61,15 @@ public class Usuario implements UserDetails{
     public boolean isEnabled() {
         return true;
     }
+
+	public String getApodo() {
+		return apodo;
+	}
+
+
+	public void setApodo(String apodo) {
+		this.apodo = apodo;
+	}
 
 
 	public Long getId() {

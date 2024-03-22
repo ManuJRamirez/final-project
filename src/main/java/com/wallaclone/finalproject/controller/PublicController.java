@@ -4,22 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.wallaclone.finalproject.dto.RequestAnunciosFiltradosDto;
 import com.wallaclone.finalproject.dto.ResponseAnuncioDto;
+import com.wallaclone.finalproject.dto.ResponseCategoriaDto;
 import com.wallaclone.finalproject.service.AnunciosService;
 
 @RestController
 @RequestMapping("/public")
-public class AnunciosController {
+public class PublicController {
 
 	@Autowired
 	AnunciosService anunciosService;
@@ -32,6 +36,16 @@ public class AnunciosController {
 	@GetMapping("/anuncio/{id}")
 	public ResponseEntity<ResponseAnuncioDto> getAnuncio(@PathVariable String id) {
 		return ResponseEntity.ok(anunciosService.getAnuncio(id));
+	}
+
+	@GetMapping("/categorias")
+	public ResponseEntity<List<ResponseCategoriaDto>> getCategorias() {
+		return ResponseEntity.ok(anunciosService.getCategorias());
+	}
+
+	@GetMapping("/anunciosFiltrados")
+	public ResponseEntity<Page<ResponseAnuncioDto>> getAnunciosFiltrados(@RequestBody RequestAnunciosFiltradosDto request) {
+		return ResponseEntity.ok(anunciosService.getAnunciosFiltrados(request));
 	}
 
 	@ExceptionHandler(value = MethodArgumentNotValidException.class)

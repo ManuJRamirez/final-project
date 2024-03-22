@@ -1,27 +1,28 @@
 package com.wallaclone.finalproject.dto;
 
-import java.util.Date;
 import java.util.List;
 
-public class ResponseAnuncioDto {
-	private int id;
-	private String titulo;
-	private String descripcion;
-	private double precio;
-	private boolean transacion;
-	private Date fechaCreacion;
-	private boolean reservado;
-	private boolean vendido;
-	private String apodoCreador;
-	private List<String> listCategoria;
-	
-	public int getId() {
-		return id;
-	}
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
-	public void setId(int id) {
-		this.id = id;
-	}
+public class RequestNuevoAnuncioDto {
+	@Valid
+	@NotBlank(message = "El título no puede estar en blanco")
+	private String titulo;
+	@Valid
+	@NotBlank(message = "Añade una descripción")
+	private String descripcion;
+	@Valid
+	@DecimalMin(value = "0.0", message = "El precio debe ser mayor o igual a 0")
+	private double precio;
+	@NotNull(message = "Elige una de estas opciones")
+	private boolean transacion;
+	private List<byte[]> imagen;
+	@NotEmpty(message = "Elige al menos un tag de la lista")
+	private List<String> listCategoria;
 
 	public String getTitulo() {
 		return titulo;
@@ -55,36 +56,12 @@ public class ResponseAnuncioDto {
 		this.transacion = transacion;
 	}
 
-	public Date getFechaCreacion() {
-		return fechaCreacion;
+	public List<byte[]> getImagen() {
+		return imagen;
 	}
 
-	public void setFechaCreacion(Date fechaCreacion) {
-		this.fechaCreacion = fechaCreacion;
-	}
-
-	public boolean isReservado() {
-		return reservado;
-	}
-
-	public void setReservado(boolean reservado) {
-		this.reservado = reservado;
-	}
-
-	public boolean isVendido() {
-		return vendido;
-	}
-
-	public void setVendido(boolean vendido) {
-		this.vendido = vendido;
-	}
-
-	public String getApodoCreador() {
-		return apodoCreador;
-	}
-
-	public void setApodoCreador(String apodoCreador) {
-		this.apodoCreador = apodoCreador;
+	public void setImagen(List<byte[]> imagen) {
+		this.imagen = imagen;
 	}
 
 	public List<String> getListCategoria() {
@@ -94,5 +71,5 @@ public class ResponseAnuncioDto {
 	public void setListCategoria(List<String> listCategoria) {
 		this.listCategoria = listCategoria;
 	}
-		
+
 }

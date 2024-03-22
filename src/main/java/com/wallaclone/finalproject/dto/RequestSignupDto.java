@@ -13,6 +13,9 @@ import jakarta.validation.constraints.Pattern;
 
 public class RequestSignupDto {
 	@Valid
+	@NotBlank(message = "El apodo no puede estar en blanco")
+	private String apodo;
+	@Valid
 	@NotBlank(message = "El nombre no puede estar en blanco")
 	private String nombre;
 	@Valid
@@ -36,6 +39,14 @@ public class RequestSignupDto {
 	private boolean notificacion;
 
 	private byte[] imgPerfil;
+
+	public String getApodo() {
+		return apodo;
+	}
+
+	public void setApodo(String apodo) {
+		this.apodo = apodo;
+	}
 
 	public String getNombre() {
 		return nombre;

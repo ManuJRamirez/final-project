@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.wallaclone.finalproject.dto.RequestLoginDto;
+import com.wallaclone.finalproject.dto.RequestNuevoAnuncioDto;
 import com.wallaclone.finalproject.dto.RequestSignupDto;
 import com.wallaclone.finalproject.dto.ResponseLoginDto;
 import com.wallaclone.finalproject.service.AuthService;
@@ -35,6 +36,12 @@ public class AuthController {
     public ResponseEntity<ResponseLoginDto> signIn(@RequestBody RequestLoginDto request){
         return ResponseEntity.ok(authService.signIn(request));
     }
+    
+	@PostMapping("/nuevoanuncio")
+	public ResponseEntity<String> nuevoAnuncio(@RequestBody RequestNuevoAnuncioDto request){
+		authService.nuevoAnuncio(request);
+		return new ResponseEntity<>(HttpStatus.CREATED);
+	}
 
 	@ExceptionHandler(value = MethodArgumentNotValidException.class)
 	public ResponseEntity<List<String>> handleValidationsException(MethodArgumentNotValidException exception) {
