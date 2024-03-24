@@ -1,11 +1,17 @@
 package com.wallaclone.finalproject.entity;
 
 import java.util.Date;
+import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -13,7 +19,6 @@ import jakarta.persistence.Table;
 public class Anuncio {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-
 	private Long id;
 	private String titulo;
 	private String descripcion;
@@ -23,6 +28,13 @@ public class Anuncio {
 	private Date fechaCreacion;
 	private boolean reservado;
 	private boolean vendido;
+	
+	@ManyToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+	@JoinTable(
+			name = "anuncios_tags",
+			joinColumns = {@JoinColumn(name="idAnuncio", referencedColumnName = "id")},
+					inverseJoinColumns = {@JoinColumn(name="idCategoria", referencedColumnName = "id")})
+	private Set<Categoria> categorias;
 
 	public Long getId() {
 		return id;
@@ -94,6 +106,14 @@ public class Anuncio {
 
 	public void setVendido(boolean vendido) {
 		this.vendido = vendido;
+	}
+
+	public Set<Categoria> getCategorias() {
+		return categorias;
+	}
+
+	public void setCategorias(Set<Categoria> categorias) {
+		this.categorias = categorias;
 	}
 
 }

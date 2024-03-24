@@ -11,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,7 +44,7 @@ public class PublicController {
 		return ResponseEntity.ok(anunciosService.getCategorias());
 	}
 
-	@GetMapping("/anunciosFiltrados")
+	@PostMapping("/anunciosFiltrados")
 	public ResponseEntity<Page<ResponseAnuncioDto>> getAnunciosFiltrados(@RequestBody RequestAnunciosFiltradosDto request) {
 		return ResponseEntity.ok(anunciosService.getAnunciosFiltrados(request));
 	}

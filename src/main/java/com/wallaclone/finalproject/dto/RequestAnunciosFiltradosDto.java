@@ -1,5 +1,7 @@
 package com.wallaclone.finalproject.dto;
 
+import java.util.List;
+
 import com.wallaclone.finalproject.utils.ApplicationConstants;
 
 import jakarta.validation.constraints.Min;
@@ -8,9 +10,7 @@ public class RequestAnunciosFiltradosDto {
 
 	private int pagina = 0;
 	
-	private int tamanoPagina = 10;
-	
-	private String categoria;
+	private List<String> categorias;
 	
 	private String titulo;
 	
@@ -30,20 +30,12 @@ public class RequestAnunciosFiltradosDto {
 		this.pagina = pagina;
 	}
 
-	public int getTamanoPagina() {
-		return tamanoPagina;
+	public List<String> getCategorias() {
+		return categorias;
 	}
 
-	public void setTamanoPagina(int tamanoPagina) {
-		this.tamanoPagina = tamanoPagina;
-	}
-
-	public String getCategoria() {
-		return categoria;
-	}
-
-	public void setCategoria(String categoria) {
-		this.categoria = categoria;
+	public void setCategorias(List<String> categorias) {
+		this.categorias = categorias;
 	}
 
 	public String getTitulo() {

@@ -102,7 +102,7 @@ public class AuthServiceImpl implements AuthService {
 		
 		request.getListCategoria().stream().forEach(tag -> {
 			AnuncioTags anuncioTags = new AnuncioTags();
-			anuncioTags.setIdAnuncio(Integer.valueOf(anuncio.getId().toString()));
+			anuncioTags.setIdAnuncio(anuncio.getId());
 			anuncioTags.setIdCategoria(Long.valueOf(tag)); 
 			anunciosTagsRepository.save(anuncioTags);			
 		});

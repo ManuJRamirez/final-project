@@ -4,6 +4,8 @@ public class ApplicationConstants {
 	
 	public static final String USER_ROLE = "USER";
 	public static final String AUTHORIZATION_HEADER = "Authorization";
+	
+	public static final int TAMANO_PAGINA =  12;
 
 	public static final String ORDEN_RECIENTE = "RECIENTE";
 	public static final String ORDEN_ANTIGUOS = "ANTIGUOS";

@@ -27,6 +27,7 @@ import com.wallaclone.finalproject.repository.UsuariosRepository;
 import com.wallaclone.finalproject.service.AnunciosService;
 import com.wallaclone.finalproject.utils.ApplicationConstants;
 
+import jakarta.persistence.criteria.CriteriaBuilder.In;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
@@ -87,17 +88,18 @@ public class AnunciosServiceImpl implements AnunciosService {
 	
 	@Override
 	public Page<ResponseAnuncioDto> getAnunciosFiltrados(RequestAnunciosFiltradosDto request) {
-        PageRequest paginaRequest = PageRequest.of(request.getPagina(), request.getTamanoPagina());
+        PageRequest paginaRequest = PageRequest.of(request.getPagina(), ApplicationConstants.TAMANO_PAGINA);
         
         Specification<Anuncio> spec = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (request.getCategoria() != null && !request.getCategoria().isEmpty()) {
-            	Join<Anuncio, AnuncioTags> anuncioTagJoin = root.join("id", JoinType.INNER);
-            	anuncioTagJoin.on(criteriaBuilder.equal(anuncioTagJoin.get("idanuncio"), root.join("id")));
-                Join<AnuncioTags, Categoria> categoriaJoin = anuncioTagJoin.join("idcategoria", JoinType.INNER);
-                categoriaJoin.on(criteriaBuilder.equal(categoriaJoin.get("id"), root.join("idcategoria")));
-                predicates.add(criteriaBuilder.equal(categoriaJoin.get("nombre"), request.getCategoria()));
+            if (request.getCategorias() != null && !request.getCategorias().isEmpty()) {// in categorias
+            	Join<Anuncio, Categoria> categoriaJoin = root.join("categorias", JoinType.INNER);
+                In<String> inClause = criteriaBuilder.in(categoriaJoin.get("nombre"));
+                for (String categoria : request.getCategorias()) {
+                    inClause.value(categoria);
+                }  
+                predicates.add(inClause);         
             }
 
             if (request.getTitulo() != null && !request.getTitulo().isEmpty()) {
@@ -119,19 +121,19 @@ public class AnunciosServiceImpl implements AnunciosService {
 
 		switch (request.getOrden()) {
 		case ApplicationConstants.ORDEN_RECIENTE:
-			paginaRequest = PageRequest.of(request.getPagina(), request.getTamanoPagina(),
+			paginaRequest = PageRequest.of(request.getPagina(), ApplicationConstants.TAMANO_PAGINA,
 					Sort.by("fechaCreacion").descending());
 			break;
 		case ApplicationConstants.ORDEN_ANTIGUOS:
-			paginaRequest = PageRequest.of(request.getPagina(), request.getTamanoPagina(),
+			paginaRequest = PageRequest.of(request.getPagina(), ApplicationConstants.TAMANO_PAGINA,
 					Sort.by("fechaCreacion").ascending());
 			break;
 		case ApplicationConstants.ORDEN_PRECIO_MIN:
-			paginaRequest = PageRequest.of(request.getPagina(), request.getTamanoPagina(),
+			paginaRequest = PageRequest.of(request.getPagina(), ApplicationConstants.TAMANO_PAGINA,
 					Sort.by("precio").ascending());
 			break;
 		case ApplicationConstants.ORDEN_PRECIO_MAX:
-			paginaRequest = PageRequest.of(request.getPagina(), request.getTamanoPagina(),
+			paginaRequest = PageRequest.of(request.getPagina(), ApplicationConstants.TAMANO_PAGINA,
 					Sort.by("precio").descending());
 			break;
 		default:

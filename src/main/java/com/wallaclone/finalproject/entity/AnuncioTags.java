@@ -11,9 +11,10 @@ import jakarta.persistence.Table;
 public class AnuncioTags {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-
 	private Long id;
-	private int idAnuncio;
+	
+	private Long idAnuncio;
+	
 	private Long idCategoria;
 
 	public Long getId() {
@@ -24,11 +25,11 @@ public class AnuncioTags {
 		this.id = id;
 	}
 
-	public int getIdAnuncio() {
+	public Long getIdAnuncio() {
 		return idAnuncio;
 	}
 
-	public void setIdAnuncio(int idAnuncio) {
+	public void setIdAnuncio(Long idAnuncio) {
 		this.idAnuncio = idAnuncio;
 	}
 
