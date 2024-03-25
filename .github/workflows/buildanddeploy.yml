@@ -64,3 +64,4 @@ jobs:
             sudo cp /home/ubuntu/tomcat/github/workspace/target/final-project-0.0.1-SNAPSHOT.war /home/apps/tomcat/webapps/final-project.war
             sudo systemctl start tomcat
             rm -r tomcat/
+            
