@@ -1,5 +1,8 @@
 package com.wallaclone.finalproject.service.impl;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.Date;
 
 import org.modelmapper.ModelMapper;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.wallaclone.finalproject.dto.RequestLoginDto;
 import com.wallaclone.finalproject.dto.RequestNuevoAnuncioDto;
 import com.wallaclone.finalproject.dto.RequestSignupDto;
+import com.wallaclone.finalproject.dto.ResponseDefaultImagenDto;
 import com.wallaclone.finalproject.dto.ResponseLoginDto;
 import com.wallaclone.finalproject.entity.Anuncio;
 import com.wallaclone.finalproject.entity.AnuncioTags;
@@ -108,4 +112,18 @@ public class AuthServiceImpl implements AuthService {
 		});
 		
 	}
+
+	@Override
+	public ResponseDefaultImagenDto getDefaultImagen() throws IOException {
+		File file = new File(ApplicationConstants.DEFAULT_IMG);
+        if (!file.exists()) {
+            throw new IOException("La imagen por defecto no existe");
+        }
+        ResponseDefaultImagenDto response = new ResponseDefaultImagenDto();
+        byte[] data = Files.readAllBytes(file.toPath());
+        response.setImagen(data);
+        return response;
+    }
+	
+	
 }
