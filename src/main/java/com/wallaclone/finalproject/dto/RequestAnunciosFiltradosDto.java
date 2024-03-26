@@ -21,6 +21,8 @@ public class RequestAnunciosFiltradosDto {
 
     @Min(0)
 	private int precioMax;
+    
+    private Boolean transaccion;
 
 	public int getPagina() {
 		return pagina;
@@ -68,6 +70,14 @@ public class RequestAnunciosFiltradosDto {
 
 	public void setPrecioMax(int precioMax) {
 		this.precioMax = precioMax;
+	}
+
+	public Boolean isTransaccion() {
+		return transaccion;
+	}
+
+	public void setTransaccion(Boolean transaccion) {
+		this.transaccion = transaccion;
 	}
 	
 }

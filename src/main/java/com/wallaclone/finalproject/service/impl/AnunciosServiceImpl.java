@@ -113,6 +113,10 @@ public class AnunciosServiceImpl implements AnunciosService {
             if (request.getPrecioMax() > 0) {
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("precio"), request.getPrecioMax()));
             }
+            
+            if (request.isTransaccion() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("transacion"), request.isTransaccion()));
+            }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
