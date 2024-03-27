@@ -1,9 +1,19 @@
 package com.wallaclone.finalproject.service.impl;
 
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.imageio.ImageIO;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,11 +83,14 @@ public class AnunciosServiceImpl implements AnunciosService {
 		});
 		responseAnuncioDto.setListCategoria(listCategorias);
 
-		List<byte[]> listImagenes = new ArrayList<>();
-		anuncio.getImagenes().forEach(categoria -> {
-			listImagenes.add(categoria.getImagen());
+		Map<Long, byte[]> mapIdImagenes = new HashMap<Long, byte[]>();
+		Map<Long, byte[]> mapIdImagenesOriginal = new HashMap<Long, byte[]>();
+		anuncio.getImagenes().forEach(imagen -> {
+			mapIdImagenes.put(imagen.getId(), transformarTamImg(imagen.getImagen(), ApplicationConstants.TAMANO_ANCHO_DETALLE_ANUNCIO, ApplicationConstants.TAMANO_ALTO_DETALLE_ANUNCIO));
+			mapIdImagenesOriginal.put(imagen.getId(), imagen.getImagen());
 		});
-		responseAnuncioDto.setListImagenes(listImagenes);
+		responseAnuncioDto.setMapIdImagenes(mapIdImagenes);
+		responseAnuncioDto.setMapIdImagenesOriginal(mapIdImagenesOriginal);
 
 		return responseAnuncioDto;
 	}
@@ -158,13 +171,70 @@ public class AnunciosServiceImpl implements AnunciosService {
 			});
 			res.setListCategoria(listCategorias);
 
-			List<byte[]> listImagenes = new ArrayList<>();
-			anuncio.getImagenes().forEach(categoria -> {
-				listImagenes.add(categoria.getImagen());
+			Map<Long, byte[]> mapIdImagenes = new HashMap<Long, byte[]>();
+			anuncio.getImagenes().forEach(imagen -> {
+				mapIdImagenes.put(imagen.getId(), transformarTamImg(imagen.getImagen(), ApplicationConstants.TAMANO_ANCHO_LIST_ANUNCIO, ApplicationConstants.TAMANO_ALTO_LIST_ANUNCIO));
 			});
-			res.setListImagenes(listImagenes);
+			res.setMapIdImagenes(mapIdImagenes);
 			return res;
 		});
 	}
+	
+	private byte[] transformarTamImg(byte[] imgOriginal, int targetWidth, int targetHeight) {
+		// Convertir los bytes en BufferedImage
+		ByteArrayInputStream bis = new ByteArrayInputStream(imgOriginal);
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		try {
+			BufferedImage originalImage = ImageIO.read(bis);
+
+			int originalWidth = originalImage.getWidth();
+			int originalHeight = originalImage.getHeight();
+
+			// Calcular el aspect ratio deseado
+			double aspectRatio = (double) targetWidth / targetHeight;
+
+			// Calcular el aspect ratio de la imagen original
+			double imageAspectRatio = (double) originalWidth / originalHeight;
+
+			// Inicializar las dimensiones para el área de recorte
+			int newWidth = originalWidth;
+			int newHeight = originalHeight;
+
+			// Ajustar las dimensiones para mantener el aspect ratio deseado
+			if (imageAspectRatio > aspectRatio) {
+				// La imagen original es más ancha, recortamos los lados
+				newWidth = (int) (originalHeight * aspectRatio);
+			} else {
+				// La imagen original es más alta, recortamos la parte superior e inferior
+				newHeight = (int) (originalWidth / aspectRatio);
+			}
+
+			// Calcular las coordenadas para el recorte centrado
+			int x = (originalWidth - newWidth) / 2;
+			int y = (originalHeight - newHeight) / 2;
+
+			// Recortar la imagen original según las dimensiones calculadas
+			BufferedImage croppedImage = originalImage.getSubimage(x, y, newWidth, newHeight);
+
+			// Escalar la imagen recortada al tamaño deseado
+			Image scaledImage = croppedImage.getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
+
+			// Crear una nueva imagen vacía con las dimensiones deseadas
+			BufferedImage finalImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_ARGB);
+
+			// Dibujar la imagen escalada en la nueva imagen
+			Graphics2D g2d = finalImage.createGraphics();
+			g2d.drawImage(scaledImage, 0, 0, null);
+			g2d.dispose();
+
+			// Escribir la imagen final en el flujo de salida
+			ImageIO.write(finalImage, "png", bos);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return bos.toByteArray();
+	}
+
 
 }
