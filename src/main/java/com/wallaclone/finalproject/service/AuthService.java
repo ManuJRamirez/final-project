@@ -7,6 +7,7 @@ import com.wallaclone.finalproject.dto.RequestNuevoAnuncioDto;
 import com.wallaclone.finalproject.dto.RequestSignupDto;
 import com.wallaclone.finalproject.dto.ResponseDefaultImagenDto;
 import com.wallaclone.finalproject.dto.ResponseLoginDto;
+import com.wallaclone.finalproject.dto.ResponseNuevoAnuncioDto;
 
 public interface AuthService {
 
@@ -14,7 +15,7 @@ public interface AuthService {
 
 	public ResponseLoginDto signIn(RequestLoginDto signinRequest);
 	
-	public void nuevoAnuncio(RequestNuevoAnuncioDto request);
+	public ResponseNuevoAnuncioDto nuevoAnuncio(RequestNuevoAnuncioDto request);
 	
 	public ResponseDefaultImagenDto getDefaultImagen() throws IOException ;
 }

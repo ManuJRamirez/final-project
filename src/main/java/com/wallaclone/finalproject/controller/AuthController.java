@@ -21,6 +21,7 @@ import com.wallaclone.finalproject.dto.RequestNuevoAnuncioDto;
 import com.wallaclone.finalproject.dto.RequestSignupDto;
 import com.wallaclone.finalproject.dto.ResponseDefaultImagenDto;
 import com.wallaclone.finalproject.dto.ResponseLoginDto;
+import com.wallaclone.finalproject.dto.ResponseNuevoAnuncioDto;
 import com.wallaclone.finalproject.service.AuthService;
 
 @RestController
@@ -41,9 +42,8 @@ public class AuthController {
     }
     
 	@PostMapping("/nuevoanuncio")
-	public ResponseEntity<String> nuevoAnuncio(@RequestBody RequestNuevoAnuncioDto request){
-		authService.nuevoAnuncio(request);
-		return new ResponseEntity<>(HttpStatus.CREATED);
+	public ResponseEntity<ResponseNuevoAnuncioDto> nuevoAnuncio(@RequestBody RequestNuevoAnuncioDto request){
+		return new ResponseEntity<ResponseNuevoAnuncioDto>(authService.nuevoAnuncio(request), HttpStatus.CREATED);
 	}
 
 	@GetMapping("/defaultimage")

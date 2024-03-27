@@ -19,6 +19,7 @@ import com.wallaclone.finalproject.dto.RequestNuevoAnuncioDto;
 import com.wallaclone.finalproject.dto.RequestSignupDto;
 import com.wallaclone.finalproject.dto.ResponseDefaultImagenDto;
 import com.wallaclone.finalproject.dto.ResponseLoginDto;
+import com.wallaclone.finalproject.dto.ResponseNuevoAnuncioDto;
 import com.wallaclone.finalproject.entity.Anuncio;
 import com.wallaclone.finalproject.entity.AnuncioTags;
 import com.wallaclone.finalproject.entity.Imagen;
@@ -87,13 +88,13 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	@Transactional
-	public void nuevoAnuncio(RequestNuevoAnuncioDto request) {
+	public ResponseNuevoAnuncioDto nuevoAnuncio(RequestNuevoAnuncioDto request) {
 		Anuncio anuncio = modelMapper.map(request, Anuncio.class);
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String apodo = authentication.getName();
 		anuncio.getUsuario().setId((usuariosRepository.findByApodo(apodo).get().getId()));
 		anuncio.setFechaCreacion(new Date(System.currentTimeMillis()));
-		anunciosRepository.save(anuncio);
+		Anuncio anuncioGuardado = anunciosRepository.save(anuncio);
 		
 		if(request.getImagen() != null && !request.getImagen().isEmpty()) {
 			request.getImagen().stream().forEach(img -> {
@@ -111,6 +112,12 @@ public class AuthServiceImpl implements AuthService {
 			anunciosTagsRepository.save(anuncioTags);			
 		});
 		
+		ResponseNuevoAnuncioDto response = new ResponseNuevoAnuncioDto();
+		Long id = anuncioGuardado.getId();
+		String titulo = anuncioGuardado.getTitulo();
+		response.setId(id);
+		response.setTitulo(titulo);
+		return response;
 	}
 
 	@Override
