@@ -13,4 +13,5 @@ public class ApplicationConstants {
 	public static final String ORDEN_PRECIO_MAX = "MAX";
 	
 	public static final String DEFAULT_IMG = "E:/final-project-front/assets/media/product/p-7.png";
+	
 }

@@ -14,6 +14,7 @@ public class ResponseAnuncioDto {
 	private boolean vendido;
 	private String apodoCreador;
 	private List<String> listCategoria;
+	private List<byte[]> listImagenes;
 	
 	public int getId() {
 		return id;
@@ -94,5 +95,13 @@ public class ResponseAnuncioDto {
 	public void setListCategoria(List<String> listCategoria) {
 		this.listCategoria = listCategoria;
 	}
-		
+
+	public List<byte[]> getListImagenes() {
+		return listImagenes;
+	}
+
+	public void setListImagenes(List<byte[]> listImagenes) {
+		this.listImagenes = listImagenes;
+	}
+	
 }

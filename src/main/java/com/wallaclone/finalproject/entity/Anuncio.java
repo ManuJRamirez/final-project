@@ -12,6 +12,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -24,7 +26,6 @@ public class Anuncio {
 	private String descripcion;
 	private double precio;
 	private boolean transacion;
-	private int idUsuario;
 	private Date fechaCreacion;
 	private boolean reservado;
 	private boolean vendido;
@@ -35,6 +36,14 @@ public class Anuncio {
 			joinColumns = {@JoinColumn(name="idAnuncio", referencedColumnName = "id")},
 					inverseJoinColumns = {@JoinColumn(name="idCategoria", referencedColumnName = "id")})
 	private Set<Categoria> categorias;
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "idAnuncio", referencedColumnName = "id")
+	private Set<Imagen> imagenes;
+
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "idUsuario", referencedColumnName = "id")
+	private Usuario usuario;
 
 	public Long getId() {
 		return id;
@@ -76,12 +85,12 @@ public class Anuncio {
 		this.transacion = transacion;
 	}
 
-	public int getIdUsuario() {
-		return idUsuario;
+	public Usuario getUsuario() {
+		return usuario;
 	}
 
-	public void setIdUsuario(int idUsuario) {
-		this.idUsuario = idUsuario;
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
 	public Date getFechaCreacion() {
@@ -114,6 +123,14 @@ public class Anuncio {
 
 	public void setCategorias(Set<Categoria> categorias) {
 		this.categorias = categorias;
+	}
+
+	public Set<Imagen> getImagenes() {
+		return imagenes;
+	}
+
+	public void setImagenes(Set<Imagen> imagenes) {
+		this.imagenes = imagenes;
 	}
 
 }

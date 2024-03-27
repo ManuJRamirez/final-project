@@ -17,7 +17,6 @@ import com.wallaclone.finalproject.dto.RequestAnunciosFiltradosDto;
 import com.wallaclone.finalproject.dto.ResponseAnuncioDto;
 import com.wallaclone.finalproject.dto.ResponseCategoriaDto;
 import com.wallaclone.finalproject.entity.Anuncio;
-import com.wallaclone.finalproject.entity.AnuncioTags;
 import com.wallaclone.finalproject.entity.Categoria;
 import com.wallaclone.finalproject.entity.Usuario;
 import com.wallaclone.finalproject.repository.AnunciosRepository;
@@ -37,13 +36,13 @@ public class AnunciosServiceImpl implements AnunciosService {
 
 	@Autowired
 	AnunciosRepository anunciosRepository;
-	
+
 	@Autowired
 	UsuariosRepository usuarioRepository;
-	
+
 	@Autowired
 	AnunciosTagsRepository anunciosTagsRepository;
-	
+
 	@Autowired
 	CategoriasRepository categoriasRepository;
 
@@ -54,7 +53,7 @@ public class AnunciosServiceImpl implements AnunciosService {
 	public List<ResponseAnuncioDto> getAnuncios() {
 		return anunciosRepository.findAll().stream().map(anuncio -> {
 			ResponseAnuncioDto res = modelMapper.map(anuncio, ResponseAnuncioDto.class);
-			Optional<Usuario> usuario = usuarioRepository.findById((long) anuncio.getIdUsuario());
+			Optional<Usuario> usuario = usuarioRepository.findById(anuncio.getUsuario().getId());
 			res.setApodoCreador(usuario.get().getApodo());
 			return res;
 		}).collect(Collectors.toList());
@@ -62,65 +61,68 @@ public class AnunciosServiceImpl implements AnunciosService {
 
 	@Override
 	public ResponseAnuncioDto getAnuncio(String id) {
-		
+
 		Anuncio anuncio = anunciosRepository.findById(Long.valueOf(id)).get();
 		ResponseAnuncioDto responseAnuncioDto = modelMapper.map(anuncio, ResponseAnuncioDto.class);
-		
-		Optional<Usuario> usuario = usuarioRepository.findById((long) anuncio.getIdUsuario()); 		
-		responseAnuncioDto.setApodoCreador(usuario.get().getApodo());
-		
+
+		responseAnuncioDto.setApodoCreador(anuncio.getUsuario().getApodo());
+
 		List<String> listCategorias = new ArrayList<>();
-		List<Optional<AnuncioTags>> anunciosTags = anunciosTagsRepository.findByIdAnuncio((long) anuncio.getId()); 
-		anunciosTags.forEach(optionalAnuncioTag -> {
-			Optional<Categoria> categoria = categoriasRepository.findById((long) optionalAnuncioTag.get().getIdCategoria());
-			listCategorias.add(categoria.get().getNombre());
+		anuncio.getCategorias().forEach(categoria -> {
+			listCategorias.add(categoria.getNombre());
 		});
 		responseAnuncioDto.setListCategoria(listCategorias);
-		
+
+		List<byte[]> listImagenes = new ArrayList<>();
+		anuncio.getImagenes().forEach(categoria -> {
+			listImagenes.add(categoria.getImagen());
+		});
+		responseAnuncioDto.setListImagenes(listImagenes);
+
 		return responseAnuncioDto;
 	}
 
 	@Override
-	public List<ResponseCategoriaDto> getCategorias() {		
+	public List<ResponseCategoriaDto> getCategorias() {
 		return categoriasRepository.findAll().stream()
 				.map(categoria -> modelMapper.map(categoria, ResponseCategoriaDto.class)).collect(Collectors.toList());
 	}
-	
+
 	@Override
 	public Page<ResponseAnuncioDto> getAnunciosFiltrados(RequestAnunciosFiltradosDto request) {
-        PageRequest paginaRequest = PageRequest.of(request.getPagina(), ApplicationConstants.TAMANO_PAGINA);
-        
-        Specification<Anuncio> spec = (root, query, criteriaBuilder) -> {
-            List<Predicate> predicates = new ArrayList<>();
+		PageRequest paginaRequest = PageRequest.of(request.getPagina(), ApplicationConstants.TAMANO_PAGINA);
 
-            if (request.getCategorias() != null && !request.getCategorias().isEmpty()) {// in categorias
-            	Join<Anuncio, Categoria> categoriaJoin = root.join("categorias", JoinType.INNER);
-                In<String> inClause = criteriaBuilder.in(categoriaJoin.get("nombre"));
-                for (String categoria : request.getCategorias()) {
-                    inClause.value(categoria);
-                }  
-                predicates.add(inClause);         
-            }
+		Specification<Anuncio> spec = (root, query, criteriaBuilder) -> {
+			List<Predicate> predicates = new ArrayList<>();
 
-            if (request.getTitulo() != null && !request.getTitulo().isEmpty()) {
-                predicates.add(criteriaBuilder.like(root.get("titulo"), "%" + request.getTitulo() + "%"));
-            }
+			if (request.getCategorias() != null && !request.getCategorias().isEmpty()) {// in categorias
+				Join<Anuncio, Categoria> categoriaJoin = root.join("categorias", JoinType.INNER);
+				In<String> inClause = criteriaBuilder.in(categoriaJoin.get("nombre"));
+				for (String categoria : request.getCategorias()) {
+					inClause.value(categoria);
+				}
+				predicates.add(inClause);
+			}
 
-            if (request.getPrecioMin() > 0) {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("precio"), request.getPrecioMin()));
-            }
+			if (request.getTitulo() != null && !request.getTitulo().isEmpty()) {
+				predicates.add(criteriaBuilder.like(root.get("titulo"), "%" + request.getTitulo() + "%"));
+			}
 
-            if (request.getPrecioMax() > 0) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("precio"), request.getPrecioMax()));
-            }
-            
-            if (request.isTransaccion() != null) {
-                predicates.add(criteriaBuilder.equal(root.get("transacion"), request.isTransaccion()));
-            }
+			if (request.getPrecioMin() > 0) {
+				predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("precio"), request.getPrecioMin()));
+			}
 
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-        };
-        
+			if (request.getPrecioMax() > 0) {
+				predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("precio"), request.getPrecioMax()));
+			}
+
+			if (request.isTransaccion() != null) {
+				predicates.add(criteriaBuilder.equal(root.get("transacion"), request.isTransaccion()));
+			}
+
+			return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+		};
+
 		Page<Anuncio> paginacionAnuncios;
 
 		switch (request.getOrden()) {
@@ -144,12 +146,25 @@ public class AnunciosServiceImpl implements AnunciosService {
 			break;
 		}
 		paginacionAnuncios = anunciosRepository.findAll(spec, paginaRequest);
-        
-        return paginacionAnuncios.map(anuncio -> {
+
+		return paginacionAnuncios.map(anuncio -> {
 			ResponseAnuncioDto res = modelMapper.map(anuncio, ResponseAnuncioDto.class);
-			Optional<Usuario> usuario = usuarioRepository.findById((long) anuncio.getIdUsuario());
-			usuario.ifPresent(usr -> res.setApodoCreador(usr.getApodo()));
+
+			res.setApodoCreador(anuncio.getUsuario().getApodo());
+
+			List<String> listCategorias = new ArrayList<>();
+			anuncio.getCategorias().forEach(categoria -> {
+				listCategorias.add(categoria.getNombre());
+			});
+			res.setListCategoria(listCategorias);
+
+			List<byte[]> listImagenes = new ArrayList<>();
+			anuncio.getImagenes().forEach(categoria -> {
+				listImagenes.add(categoria.getImagen());
+			});
+			res.setListImagenes(listImagenes);
 			return res;
 		});
-      }
+	}
+
 }
