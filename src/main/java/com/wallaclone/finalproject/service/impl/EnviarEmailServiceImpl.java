@@ -39,6 +39,9 @@ public class EnviarEmailServiceImpl implements EnviarEmailService {
 	@Value("${mail.smtp.password}")
 	private String password;
 	
+	@Value("${mail.ruta.recuperacion}")
+	private String ruta;
+	
 	@Autowired
 	UsuariosRepository usuariosRepository;
 
@@ -67,7 +70,7 @@ public class EnviarEmailServiceImpl implements EnviarEmailService {
 
 			try {
 				String token = jwtUtils.generateTokenShort(usuario);
-				String enlaceRecuperacion = "http://127.0.0.1:5500" + "/nueva-password.html?token=" + token;
+				String enlaceRecuperacion = ruta + "/nueva-password.html?token=" + token;
 
 				Message message = new MimeMessage(session);
 				message.setFrom(new InternetAddress(email));

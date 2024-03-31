@@ -4,13 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.Date;
-import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -80,9 +80,16 @@ public class AuthServiceImpl implements AuthService {
 	public ResponseLoginDto signIn(RequestLoginDto request) {
 		ResponseLoginDto response = new ResponseLoginDto();
 
-		authenticationManager
-				.authenticate(new UsernamePasswordAuthenticationToken(request.getApodo(), request.getContrasenia()));
-		var user = usuariosRepository.findByApodo(request.getApodo()).orElseThrow();
+		var user = usuariosRepository.findByApodo(request.getApodo()).orElseThrow(() -> new CustomException(
+				"El usuario " + request.getApodo() + " no se encuentra en la base de datos."));
+		
+		try {
+			authenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(request.getApodo(), request.getContrasenia()));
+		} catch (AuthenticationException e) {
+			throw new CustomException("La contraseña no es correcta.");
+		}
+		
 		var jwt = jwtUtils.generateToken(user);
 		response.setToken(jwt);
 
