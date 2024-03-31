@@ -19,6 +19,8 @@ public interface AuthService {
 	public ResponseNuevoAnuncioDto nuevoAnuncio(RequestNuevoAnuncioDto request);
 	
 	public ResponseDefaultImagenDto getDefaultImagen() throws IOException ;
+	
+	public void borrarAnuncio(String id);
 
 	public void nuevaPassword(RequestNuevaPasswordDto request);
 }

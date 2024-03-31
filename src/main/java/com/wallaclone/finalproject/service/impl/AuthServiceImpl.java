@@ -14,6 +14,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.wallaclone.finalproject.dto.RequestLoginDto;
 import com.wallaclone.finalproject.dto.RequestNuevaPasswordDto;
@@ -36,26 +37,26 @@ import com.wallaclone.finalproject.service.AuthService;
 import com.wallaclone.finalproject.utils.ApplicationConstants;
 import com.wallaclone.finalproject.utils.JWTUtils;
 
-import jakarta.transaction.Transactional;
+import jakarta.persistence.EntityExistsException;
 
 @Service
 public class AuthServiceImpl implements AuthService {
 
 	@Autowired
 	UsuariosRepository usuariosRepository;
-	
+
 	@Autowired
 	AnunciosRepository anunciosRepository;
-	
+
 	@Autowired
 	ImagenesRepository imagenesRepository;
-	
+
 	@Autowired
 	AnunciosTagsRepository anunciosTagsRepository;
-	
+
 	@Autowired
 	CategoriasRepository categoriasRepository;
-	
+
 	@Autowired
 	JWTUtils jwtUtils;
 
@@ -105,23 +106,23 @@ public class AuthServiceImpl implements AuthService {
 		anuncio.getUsuario().setId((usuariosRepository.findByApodo(apodo).get().getId()));
 		anuncio.setFechaCreacion(new Date(System.currentTimeMillis()));
 		Anuncio anuncioGuardado = anunciosRepository.save(anuncio);
-		
-		if(request.getImagen() != null && !request.getImagen().isEmpty()) {
+
+		if (request.getImagen() != null && !request.getImagen().isEmpty()) {
 			request.getImagen().stream().forEach(img -> {
 				Imagen imagen = new Imagen();
 				imagen.setImagen(img);
 				imagen.setIdAnuncio(Integer.valueOf(anuncio.getId().toString()));
-				imagenesRepository.save(imagen);			
+				imagenesRepository.save(imagen);
 			});
 		}
-		
+
 		request.getListCategoria().stream().forEach(tag -> {
 			AnuncioTags anuncioTags = new AnuncioTags();
 			anuncioTags.setIdAnuncio(anuncio.getId());
-			anuncioTags.setIdCategoria(Long.valueOf(tag)); 
-			anunciosTagsRepository.save(anuncioTags);			
+			anuncioTags.setIdCategoria(Long.valueOf(tag));
+			anunciosTagsRepository.save(anuncioTags);
 		});
-		
+
 		ResponseNuevoAnuncioDto response = new ResponseNuevoAnuncioDto();
 		Long id = anuncioGuardado.getId();
 		String titulo = anuncioGuardado.getTitulo();
@@ -163,6 +164,16 @@ public class AuthServiceImpl implements AuthService {
 			}
 		}
 	}
-	
-	
+
+	@Override
+	@Transactional
+	public void borrarAnuncio(String id) {
+		Long idAnuncio = Long.valueOf(id);
+		if (anunciosRepository.existsById(idAnuncio)) {
+			anunciosRepository.customDelete(idAnuncio);
+		} else {
+			throw new EntityExistsException("El anuncio con el ID " + idAnuncio + "no existe");
+		}
+
+	}
 }

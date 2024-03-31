@@ -29,7 +29,9 @@ public class RequestSignupDto {
 	@Valid
 	@NotBlank(message = "El email no puede estar en blanco")
 	@Email(message = "El email debe ser válido")
+	//@Pattern(regexp = "^((?!\\.)[\\w\\-_.]*[^.])(@\\w+)(\\.\\w+(\\.\\w+)?[^.\\W])$", message = "Email incorrecto")
 	@Pattern(regexp = "^((?!\\.)[\\w\\-_.]*[^.])(@\\w+)(\\.\\w+(\\.\\w+)?[^.\\W])$", message = "Email incorrecto")
+	
 	private String email;
 
 	@Valid
