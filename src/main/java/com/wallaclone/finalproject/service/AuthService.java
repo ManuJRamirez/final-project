@@ -3,6 +3,7 @@ package com.wallaclone.finalproject.service;
 import java.io.IOException;
 
 import com.wallaclone.finalproject.dto.RequestLoginDto;
+import com.wallaclone.finalproject.dto.RequestNuevaPasswordDto;
 import com.wallaclone.finalproject.dto.RequestNuevoAnuncioDto;
 import com.wallaclone.finalproject.dto.RequestSignupDto;
 import com.wallaclone.finalproject.dto.ResponseDefaultImagenDto;
@@ -18,4 +19,6 @@ public interface AuthService {
 	public ResponseNuevoAnuncioDto nuevoAnuncio(RequestNuevoAnuncioDto request);
 	
 	public ResponseDefaultImagenDto getDefaultImagen() throws IOException ;
+
+	public void nuevaPassword(RequestNuevaPasswordDto request);
 }

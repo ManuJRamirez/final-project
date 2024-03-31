@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.Date;
+import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.wallaclone.finalproject.dto.RequestLoginDto;
+import com.wallaclone.finalproject.dto.RequestNuevaPasswordDto;
 import com.wallaclone.finalproject.dto.RequestNuevoAnuncioDto;
 import com.wallaclone.finalproject.dto.RequestSignupDto;
 import com.wallaclone.finalproject.dto.ResponseDefaultImagenDto;
@@ -24,6 +26,7 @@ import com.wallaclone.finalproject.entity.Anuncio;
 import com.wallaclone.finalproject.entity.AnuncioTags;
 import com.wallaclone.finalproject.entity.Imagen;
 import com.wallaclone.finalproject.entity.Usuario;
+import com.wallaclone.finalproject.exceptions.CustomException;
 import com.wallaclone.finalproject.repository.AnunciosRepository;
 import com.wallaclone.finalproject.repository.AnunciosTagsRepository;
 import com.wallaclone.finalproject.repository.CategoriasRepository;
@@ -131,6 +134,28 @@ public class AuthServiceImpl implements AuthService {
         response.setImagen(data);
         return response;
     }
+
+	@Override
+	@Transactional
+	public void nuevaPassword(RequestNuevaPasswordDto request) {
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String apodo = authentication.getName();
+		
+		Usuario usuario = usuariosRepository.getOneByApodo(apodo)
+				.orElseThrow(() -> new CustomException("El usuario "
+						+ apodo + " no se encuentra en la base de datos."));
+		
+		if(usuario != null) {
+			String nuevaPassword = passwordEncoder.encode(request.getPassword());
+			if(!nuevaPassword.equals(usuario.getContrasenia())) {
+				usuario.setContrasenia(nuevaPassword);	
+				usuariosRepository.save(usuario);
+			} else {
+				throw new CustomException("La nueva contraseña no puede ser igual a la anterior.");
+			}
+		}
+	}
 	
 	
 }
