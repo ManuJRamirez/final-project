@@ -103,7 +103,7 @@ public class AuthServiceImpl implements AuthService {
 		Anuncio anuncio = modelMapper.map(request, Anuncio.class);
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String apodo = authentication.getName();
-		anuncio.getUsuario().setId((usuariosRepository.findByApodo(apodo).get().getId()));
+		anuncio.setUsuario(usuariosRepository.findByApodo(apodo).get());
 		anuncio.setFechaCreacion(new Date(System.currentTimeMillis()));
 		Anuncio anuncioGuardado = anunciosRepository.save(anuncio);
 
