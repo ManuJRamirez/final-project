@@ -83,14 +83,14 @@ public class AuthServiceImpl implements AuthService {
 
 		var user = usuariosRepository.findByApodo(request.getApodo()).orElseThrow(() -> new CustomException(
 				"El usuario " + request.getApodo() + " no se encuentra en la base de datos."));
-		
+
 		try {
 			authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(request.getApodo(), request.getContrasenia()));
 		} catch (AuthenticationException e) {
 			throw new CustomException("La contraseña no es correcta.");
 		}
-		
+
 		var jwt = jwtUtils.generateToken(user);
 		response.setToken(jwt);
 
@@ -134,30 +134,34 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public ResponseDefaultImagenDto getDefaultImagen() throws IOException {
 		File file = new File(ApplicationConstants.DEFAULT_IMG);
-        if (!file.exists()) {
-            throw new IOException("La imagen por defecto no existe");
-        }
-        ResponseDefaultImagenDto response = new ResponseDefaultImagenDto();
-        byte[] data = Files.readAllBytes(file.toPath());
-        response.setImagen(data);
-        return response;
-    }
+		if (!file.exists()) {
+			file = new File(ApplicationConstants.DEFAULT_IMG_SERVER);
+			if (!file.exists()) {
+			throw new IOException("La imagen por defecto no existe");
+			}
+		} 
+
+		
+		ResponseDefaultImagenDto response = new ResponseDefaultImagenDto();
+		byte[] data = Files.readAllBytes(file.toPath());
+		response.setImagen(data);
+		return response;
+	}
 
 	@Override
 	@Transactional
 	public void nuevaPassword(RequestNuevaPasswordDto request) {
-		
+
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String apodo = authentication.getName();
-		
-		Usuario usuario = usuariosRepository.getOneByApodo(apodo)
-				.orElseThrow(() -> new CustomException("El usuario "
-						+ apodo + " no se encuentra en la base de datos."));
-		
-		if(usuario != null) {
+
+		Usuario usuario = usuariosRepository.getOneByApodo(apodo).orElseThrow(
+				() -> new CustomException("El usuario " + apodo + " no se encuentra en la base de datos."));
+
+		if (usuario != null) {
 			String nuevaPassword = passwordEncoder.encode(request.getPassword());
-			if(!nuevaPassword.equals(usuario.getContrasenia())) {
-				usuario.setContrasenia(nuevaPassword);	
+			if (!nuevaPassword.equals(usuario.getContrasenia())) {
+				usuario.setContrasenia(nuevaPassword);
 				usuariosRepository.save(usuario);
 			} else {
 				throw new CustomException("La nueva contraseña no puede ser igual a la anterior.");
