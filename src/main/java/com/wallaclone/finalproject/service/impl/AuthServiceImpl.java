@@ -107,16 +107,17 @@ public class AuthServiceImpl implements AuthService {
 		anuncio.setFechaCreacion(new Date(System.currentTimeMillis()));
 		Anuncio anuncioGuardado = anunciosRepository.save(anuncio);
 
-		if (request.getImagen() != null && !request.getImagen().isEmpty()) {
-			request.getImagen().stream().forEach(img -> {
+		if (request.getImagenes() != null && !request.getImagenes().isEmpty()) {
+			request.getImagenes().forEach((key,value) -> {
 				Imagen imagen = new Imagen();
-				imagen.setImagen(img);
+				imagen.setImagen(value);
+				imagen.setNombre(key);
 				imagen.setIdAnuncio(Integer.valueOf(anuncio.getId().toString()));
 				imagenesRepository.save(imagen);
 			});
 		}
 
-		request.getListCategoria().stream().forEach(tag -> {
+ 		request.getListCategoria().stream().forEach(tag -> {
 			AnuncioTags anuncioTags = new AnuncioTags();
 			anuncioTags.setIdAnuncio(anuncio.getId());
 			anuncioTags.setIdCategoria(Long.valueOf(tag));
@@ -137,14 +138,14 @@ public class AuthServiceImpl implements AuthService {
 		if (!file.exists()) {
 			file = new File(ApplicationConstants.DEFAULT_IMG_SERVER);
 			if (!file.exists()) {
-			throw new IOException("La imagen por defecto no existe");
+				throw new IOException("La imagen por defecto no existe");
 			}
-		} 
+		}
 
-		
 		ResponseDefaultImagenDto response = new ResponseDefaultImagenDto();
 		byte[] data = Files.readAllBytes(file.toPath());
 		response.setImagen(data);
+		response.setNombre("default.png");
 		return response;
 	}
 
@@ -181,3 +182,50 @@ public class AuthServiceImpl implements AuthService {
 
 	}
 }
+
+
+
+//	@Override
+//	@Transactional
+//	public ResponseNuevoAnuncioDto actualizarAnuncio(String id, RequestNuevoAnuncioDto request) {
+//		Optional<Anuncio> optionalAnuncio = anunciosRepository.findById(Long.valueOf(id));
+//	    if (optionalAnuncio.isPresent()) {
+//	        Anuncio anuncio = optionalAnuncio.get();
+//	        modelMapper.map(request, anuncio); // Actualizar los campos del anuncio con los datos del request
+//	        
+//	        // Actualizar la fecha de modificación
+//	        anuncio.setFechaCreacion(new Date(System.currentTimeMillis()));
+//	        
+//	        // Guardar los cambios en el anuncio
+//	        Anuncio anuncioActualizado = anunciosRepository.save(anuncio);
+//
+//	        // Eliminar las imágenes antiguas y guardar las nuevas imágenes
+//	        imagenesRepository.customDelete(anuncio.getId());
+//	        if (request.getImagen() != null && !request.getImagen().isEmpty()) {
+//	            request.getImagen().forEach(img -> {
+//	                Imagen imagen = new Imagen();
+//	                imagen.setImagen(img);
+//	                imagen.setIdAnuncio(anuncio.getId().intValue());
+//	                imagenesRepository.save(imagen);
+//	            });
+//	        }
+//
+//	        // Actualizar las etiquetas del anuncio
+//	        anunciosTagsRepository.customDelete(anuncio.getId());
+//	        request.getListCategoria().forEach(tag -> {
+//	            AnuncioTags anuncioTags = new AnuncioTags();
+//	            anuncioTags.setIdAnuncio(anuncio.getId());
+//	            anuncioTags.setIdCategoria(Long.valueOf(tag));
+//	            anunciosTagsRepository.save(anuncioTags);
+//	        });
+//
+//	        // Crear la respuesta con los datos del anuncio actualizado
+//	        ResponseNuevoAnuncioDto response = new ResponseNuevoAnuncioDto();
+//	        response.setId(anuncioActualizado.getId());
+//	        response.setTitulo(anuncioActualizado.getTitulo());
+//	        return response;
+//	    } else {
+//	        // Manejar el caso en que no se encuentre el anuncio con el ID dado
+//	        throw new AnuncioNotFoundException("Anuncio con ID " + id + " no encontrado");
+//	    }
+//	}

@@ -15,6 +15,7 @@ public class Imagen {
 	private Long id;
 	private int idAnuncio;
 	private byte[] imagen;
+	private String nombre;
 
 	public Long getId() {
 		return id;
@@ -39,4 +40,14 @@ public class Imagen {
 	public void setImagen(byte[] imagen) {
 		this.imagen = imagen;
 	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+	
+	
 }

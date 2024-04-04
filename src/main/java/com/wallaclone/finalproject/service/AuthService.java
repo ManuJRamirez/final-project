@@ -23,4 +23,7 @@ public interface AuthService {
 	public void borrarAnuncio(String id);
 
 	public void nuevaPassword(RequestNuevaPasswordDto request);
+	
+//	public ResponseNuevoAnuncioDto actualizarAnuncio(String id, RequestNuevoAnuncioDto request);
+	
 }

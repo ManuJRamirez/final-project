@@ -17,7 +17,8 @@ public class ResponseAnuncioDto {
 	private List<String> listCategoria;
 	private Map<Long, byte[]> mapIdImagenes;
 	private Map<Long, byte[]> mapIdImagenesOriginal;
-	
+	private List<ImagenDto> listImagenes;
+
 	public int getId() {
 		return id;
 	}
@@ -113,5 +114,12 @@ public class ResponseAnuncioDto {
 	public void setMapIdImagenesOriginal(Map<Long, byte[]> mapIdImagenesOriginal) {
 		this.mapIdImagenesOriginal = mapIdImagenesOriginal;
 	}
-		
+
+	public List<ImagenDto> getListImagenes() {
+		return listImagenes;
+	}
+
+	public void setListImagenes(List<ImagenDto> listImagenes) {
+		this.listImagenes = listImagenes;
+	}
 }

@@ -23,6 +23,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.wallaclone.finalproject.dto.ImagenDto;
 import com.wallaclone.finalproject.dto.RequestAnunciosFiltradosDto;
 import com.wallaclone.finalproject.dto.ResponseAnuncioDto;
 import com.wallaclone.finalproject.dto.ResponseCategoriaDto;
@@ -85,13 +86,16 @@ public class AnunciosServiceImpl implements AnunciosService {
 
 		Map<Long, byte[]> mapIdImagenes = new HashMap<Long, byte[]>();
 		Map<Long, byte[]> mapIdImagenesOriginal = new HashMap<Long, byte[]>();
+		List<ImagenDto> listImagenDto = new ArrayList<>();
 		anuncio.getImagenes().forEach(imagen -> {
 			mapIdImagenes.put(imagen.getId(), transformarTamImg(imagen.getImagen(), ApplicationConstants.TAMANO_ANCHO_DETALLE_ANUNCIO, ApplicationConstants.TAMANO_ALTO_DETALLE_ANUNCIO));
 			mapIdImagenesOriginal.put(imagen.getId(), imagen.getImagen());
+			ImagenDto imagenDto = modelMapper.map(imagen, ImagenDto.class);
+			listImagenDto.add(imagenDto);
 		});
 		responseAnuncioDto.setMapIdImagenes(mapIdImagenes);
 		responseAnuncioDto.setMapIdImagenesOriginal(mapIdImagenesOriginal);
-
+		responseAnuncioDto.setListImagenes(listImagenDto);
 		return responseAnuncioDto;
 	}
 

@@ -1,6 +1,7 @@
 package com.wallaclone.finalproject.dto;
 
 import java.util.List;
+import java.util.Map;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
@@ -20,9 +21,10 @@ public class RequestNuevoAnuncioDto {
 	private double precio;
 	@NotNull(message = "Elige una de estas opciones")
 	private boolean transacion;
-	private List<byte[]> imagen;
+	private Map <String, byte[]> imagenes;
 	@NotEmpty(message = "Elige al menos un tag de la lista")
 	private List<String> listCategoria;
+	
 
 	public String getTitulo() {
 		return titulo;
@@ -56,12 +58,12 @@ public class RequestNuevoAnuncioDto {
 		this.transacion = transacion;
 	}
 
-	public List<byte[]> getImagen() {
-		return imagen;
+	public Map<String, byte[]> getImagenes() {
+		return imagenes;
 	}
 
-	public void setImagen(List<byte[]> imagen) {
-		this.imagen = imagen;
+	public void setImagenes(Map<String, byte[]> imagenes) {
+		this.imagenes = imagenes;
 	}
 
 	public List<String> getListCategoria() {
