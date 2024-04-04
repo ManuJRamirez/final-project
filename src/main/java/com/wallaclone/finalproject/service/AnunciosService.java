@@ -10,8 +10,6 @@ import com.wallaclone.finalproject.dto.ResponseCategoriaDto;
 
 public interface AnunciosService {
 
-	public List<ResponseAnuncioDto> getAnuncios();
-
 	public ResponseAnuncioDto getAnuncio(String id);
 
 	public List<ResponseCategoriaDto> getCategorias();

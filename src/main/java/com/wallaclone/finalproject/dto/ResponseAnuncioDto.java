@@ -2,7 +2,6 @@ package com.wallaclone.finalproject.dto;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public class ResponseAnuncioDto {
 	private int id;
@@ -15,8 +14,6 @@ public class ResponseAnuncioDto {
 	private boolean vendido;
 	private String apodoCreador;
 	private List<String> listCategoria;
-	private Map<Long, byte[]> mapIdImagenes;
-	private Map<Long, byte[]> mapIdImagenesOriginal;
 	private List<ImagenDto> listImagenes;
 
 	public int getId() {
@@ -97,22 +94,6 @@ public class ResponseAnuncioDto {
 
 	public void setListCategoria(List<String> listCategoria) {
 		this.listCategoria = listCategoria;
-	}
-
-	public Map<Long, byte[]> getMapIdImagenes() {
-		return mapIdImagenes;
-	}
-
-	public void setMapIdImagenes(Map<Long, byte[]> mapIdImagenes) {
-		this.mapIdImagenes = mapIdImagenes;
-	}
-
-	public Map<Long, byte[]> getMapIdImagenesOriginal() {
-		return mapIdImagenesOriginal;
-	}
-
-	public void setMapIdImagenesOriginal(Map<Long, byte[]> mapIdImagenesOriginal) {
-		this.mapIdImagenesOriginal = mapIdImagenesOriginal;
 	}
 
 	public List<ImagenDto> getListImagenes() {

@@ -84,8 +84,6 @@ public class EnviarEmailServiceImpl implements EnviarEmailService {
 			} catch (MessagingException e) {
 				throw new RuntimeException("Error al enviar el correo electrónico: " + e.getMessage(), e);
 			}
-		} else {
-
 		}
 	}
 }

@@ -7,10 +7,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
@@ -29,7 +26,6 @@ import com.wallaclone.finalproject.dto.ResponseAnuncioDto;
 import com.wallaclone.finalproject.dto.ResponseCategoriaDto;
 import com.wallaclone.finalproject.entity.Anuncio;
 import com.wallaclone.finalproject.entity.Categoria;
-import com.wallaclone.finalproject.entity.Usuario;
 import com.wallaclone.finalproject.repository.AnunciosRepository;
 import com.wallaclone.finalproject.repository.AnunciosTagsRepository;
 import com.wallaclone.finalproject.repository.CategoriasRepository;
@@ -61,16 +57,6 @@ public class AnunciosServiceImpl implements AnunciosService {
 	ModelMapper modelMapper;
 
 	@Override
-	public List<ResponseAnuncioDto> getAnuncios() {
-		return anunciosRepository.findAll().stream().map(anuncio -> {
-			ResponseAnuncioDto res = modelMapper.map(anuncio, ResponseAnuncioDto.class);
-			Optional<Usuario> usuario = usuarioRepository.findById(anuncio.getUsuario().getId());
-			res.setApodoCreador(usuario.get().getApodo());
-			return res;
-		}).collect(Collectors.toList());
-	}
-
-	@Override
 	public ResponseAnuncioDto getAnuncio(String id) {
 
 		Anuncio anuncio = anunciosRepository.findById(Long.valueOf(id)).get();
@@ -84,17 +70,12 @@ public class AnunciosServiceImpl implements AnunciosService {
 		});
 		responseAnuncioDto.setListCategoria(listCategorias);
 
-		Map<Long, byte[]> mapIdImagenes = new HashMap<Long, byte[]>();
-		Map<Long, byte[]> mapIdImagenesOriginal = new HashMap<Long, byte[]>();
 		List<ImagenDto> listImagenDto = new ArrayList<>();
 		anuncio.getImagenes().forEach(imagen -> {
-			mapIdImagenes.put(imagen.getId(), transformarTamImg(imagen.getImagen(), ApplicationConstants.TAMANO_ANCHO_DETALLE_ANUNCIO, ApplicationConstants.TAMANO_ALTO_DETALLE_ANUNCIO));
-			mapIdImagenesOriginal.put(imagen.getId(), imagen.getImagen());
 			ImagenDto imagenDto = modelMapper.map(imagen, ImagenDto.class);
+			imagenDto.setImagenResize(transformarTamImg(imagen.getImagen(), ApplicationConstants.TAMANO_ANCHO_DETALLE_ANUNCIO, ApplicationConstants.TAMANO_ALTO_DETALLE_ANUNCIO));
 			listImagenDto.add(imagenDto);
 		});
-		responseAnuncioDto.setMapIdImagenes(mapIdImagenes);
-		responseAnuncioDto.setMapIdImagenesOriginal(mapIdImagenesOriginal);
 		responseAnuncioDto.setListImagenes(listImagenDto);
 		return responseAnuncioDto;
 	}
@@ -175,11 +156,13 @@ public class AnunciosServiceImpl implements AnunciosService {
 			});
 			res.setListCategoria(listCategorias);
 
-			Map<Long, byte[]> mapIdImagenes = new HashMap<Long, byte[]>();
+			List<ImagenDto> listImagenes = new ArrayList<ImagenDto>();
 			anuncio.getImagenes().forEach(imagen -> {
-				mapIdImagenes.put(imagen.getId(), transformarTamImg(imagen.getImagen(), ApplicationConstants.TAMANO_ANCHO_LIST_ANUNCIO, ApplicationConstants.TAMANO_ALTO_LIST_ANUNCIO));
+				ImagenDto imagenDto = modelMapper.map(imagen, ImagenDto.class);
+				imagenDto.setImagen(transformarTamImg(imagen.getImagen(), ApplicationConstants.TAMANO_ANCHO_LIST_ANUNCIO, ApplicationConstants.TAMANO_ALTO_LIST_ANUNCIO));
+				listImagenes.add(imagenDto);
 			});
-			res.setMapIdImagenes(mapIdImagenes);
+			res.setListImagenes(listImagenes);
 			return res;
 		});
 	}

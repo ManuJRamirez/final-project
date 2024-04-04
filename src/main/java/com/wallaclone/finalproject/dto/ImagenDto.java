@@ -4,6 +4,7 @@ public class ImagenDto {
 	private Long id;
 	private String nombre;
 	private byte[] imagen;
+	private byte[] imagenResize;
 
 	public Long getId() {
 		return id;
@@ -27,6 +28,14 @@ public class ImagenDto {
 
 	public void setImagen(byte[] imagen) {
 		this.imagen = imagen;
+	}
+
+	public byte[] getImagenResize() {
+		return imagenResize;
+	}
+
+	public void setImagenResize(byte[] imagenResize) {
+		this.imagenResize = imagenResize;
 	}
 
 }

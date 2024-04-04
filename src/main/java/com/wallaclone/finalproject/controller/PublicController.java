@@ -37,11 +37,6 @@ public class PublicController {
 	@Autowired
 	EnviarEmailService enviarEmailService;
 
-	@GetMapping("/anuncios")
-	public ResponseEntity<List<ResponseAnuncioDto>> getAnuncios() {
-		return ResponseEntity.ok(anunciosService.getAnuncios());
-	}
-
 	@GetMapping("/anuncio/{id}")
 	public ResponseEntity<ResponseAnuncioDto> getAnuncio(@PathVariable String id) {
 		return ResponseEntity.ok(anunciosService.getAnuncio(id));
