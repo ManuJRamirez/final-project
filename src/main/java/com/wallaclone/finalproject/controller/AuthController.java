@@ -70,8 +70,8 @@ public class AuthController {
 	}
 	
 	@PutMapping("/actualizaranuncio/{id}")
-	public ResponseEntity<ResponseNuevoAnuncioDto> actualizarAnuncio(@PathVariable String id, RequestNuevoAnuncioDto request){
-		return new ResponseEntity<ResponseNuevoAnuncioDto>(authService.nuevoAnuncio(request), HttpStatus.CREATED);
+	public ResponseEntity<ResponseNuevoAnuncioDto> actualizarAnuncio(@PathVariable String id, @RequestBody RequestNuevoAnuncioDto request){
+		return new ResponseEntity<ResponseNuevoAnuncioDto>(authService.actualizarAnuncio(id, request), HttpStatus.CREATED);
 	}
 	
 	@ExceptionHandler(value = MethodArgumentNotValidException.class)

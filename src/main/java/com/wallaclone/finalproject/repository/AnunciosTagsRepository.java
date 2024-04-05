@@ -15,7 +15,7 @@ public interface AnunciosTagsRepository extends JpaRepository<AnuncioTags, Long>
 	List<Optional<AnuncioTags>> findByIdAnuncio(long idAnuncio);
 	
 	@Modifying
-	@Query(value = "delete from anuncios_tags where id = ?1", nativeQuery = true)
+	@Query(value = "delete from anuncios_tags where id_anuncio = ?1", nativeQuery = true)
 	void customDelete(Long id);
 
 }

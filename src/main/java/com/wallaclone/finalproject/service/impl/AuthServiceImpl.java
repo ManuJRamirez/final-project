@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.Date;
+import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -181,51 +182,42 @@ public class AuthServiceImpl implements AuthService {
 		}
 
 	}
+
+	@Override
+	@Transactional
+	public ResponseNuevoAnuncioDto actualizarAnuncio(String id, RequestNuevoAnuncioDto request) {
+		Anuncio anuncio = anunciosRepository.getReferenceById(Long.valueOf(id));
+	    if (anuncio != null) {
+	        modelMapper.map(request, anuncio); 
+	        anuncio.setId(Long.valueOf(id));
+	        Anuncio anuncioActualizado = anunciosRepository.save(anuncio);
+
+	        imagenesRepository.customDelete(anuncio.getId());
+	        if (request.getImagenes() != null && !request.getImagenes().isEmpty()) {
+	            request.getImagenes().forEach((k,v) -> {
+	                Imagen imagen = new Imagen();
+	                imagen.setIdAnuncio(anuncio.getId().intValue());
+	                imagen.setImagen(v);
+	                imagen.setNombre(k);
+	                imagenesRepository.save(imagen);
+	            });
+	        }
+
+	        anunciosTagsRepository.customDelete(anuncio.getId());
+	        request.getListCategoria().forEach(tag -> {
+	            AnuncioTags anuncioTags = new AnuncioTags();
+	            anuncioTags.setIdAnuncio(anuncio.getId());
+	            anuncioTags.setIdCategoria(Long.valueOf(tag));
+	            anunciosTagsRepository.save(anuncioTags);
+	        });
+
+	        ResponseNuevoAnuncioDto response = new ResponseNuevoAnuncioDto();
+	        response.setId(anuncioActualizado.getId());
+	        response.setTitulo(anuncioActualizado.getTitulo());
+	        return response;
+	    } else {
+	        // Manejar el caso en que no se encuentre el anuncio con el ID dado
+	        throw new CustomException("Anuncio con ID " + id + " no encontrado");
+	    }
+	}
 }
-
-
-
-//	@Override
-//	@Transactional
-//	public ResponseNuevoAnuncioDto actualizarAnuncio(String id, RequestNuevoAnuncioDto request) {
-//		Optional<Anuncio> optionalAnuncio = anunciosRepository.findById(Long.valueOf(id));
-//	    if (optionalAnuncio.isPresent()) {
-//	        Anuncio anuncio = optionalAnuncio.get();
-//	        modelMapper.map(request, anuncio); // Actualizar los campos del anuncio con los datos del request
-//	        
-//	        // Actualizar la fecha de modificación
-//	        anuncio.setFechaCreacion(new Date(System.currentTimeMillis()));
-//	        
-//	        // Guardar los cambios en el anuncio
-//	        Anuncio anuncioActualizado = anunciosRepository.save(anuncio);
-//
-//	        // Eliminar las imágenes antiguas y guardar las nuevas imágenes
-//	        imagenesRepository.customDelete(anuncio.getId());
-//	        if (request.getImagen() != null && !request.getImagen().isEmpty()) {
-//	            request.getImagen().forEach(img -> {
-//	                Imagen imagen = new Imagen();
-//	                imagen.setImagen(img);
-//	                imagen.setIdAnuncio(anuncio.getId().intValue());
-//	                imagenesRepository.save(imagen);
-//	            });
-//	        }
-//
-//	        // Actualizar las etiquetas del anuncio
-//	        anunciosTagsRepository.customDelete(anuncio.getId());
-//	        request.getListCategoria().forEach(tag -> {
-//	            AnuncioTags anuncioTags = new AnuncioTags();
-//	            anuncioTags.setIdAnuncio(anuncio.getId());
-//	            anuncioTags.setIdCategoria(Long.valueOf(tag));
-//	            anunciosTagsRepository.save(anuncioTags);
-//	        });
-//
-//	        // Crear la respuesta con los datos del anuncio actualizado
-//	        ResponseNuevoAnuncioDto response = new ResponseNuevoAnuncioDto();
-//	        response.setId(anuncioActualizado.getId());
-//	        response.setTitulo(anuncioActualizado.getTitulo());
-//	        return response;
-//	    } else {
-//	        // Manejar el caso en que no se encuentre el anuncio con el ID dado
-//	        throw new AnuncioNotFoundException("Anuncio con ID " + id + " no encontrado");
-//	    }
-//	}

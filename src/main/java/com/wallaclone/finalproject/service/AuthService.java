@@ -24,6 +24,6 @@ public interface AuthService {
 
 	public void nuevaPassword(RequestNuevaPasswordDto request);
 	
-//	public ResponseNuevoAnuncioDto actualizarAnuncio(String id, RequestNuevoAnuncioDto request);
+	public ResponseNuevoAnuncioDto actualizarAnuncio(String id, RequestNuevoAnuncioDto request);
 	
 }

@@ -11,6 +11,6 @@ import com.wallaclone.finalproject.entity.Imagen;
 public interface ImagenesRepository extends JpaRepository<Imagen, Long> {
 
 	@Modifying
-	@Query(value = "delete from imagenes where id = ?1", nativeQuery = true)
+	@Query(value = "delete from imagenes where id_anuncio = ?1", nativeQuery = true)
 	void customDelete(Long id);
 }

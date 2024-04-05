@@ -11,7 +11,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.wallaclone.finalproject.exceptions.TokenInvalidException;
 import com.wallaclone.finalproject.service.impl.CustomUserDetailsService;
 import com.wallaclone.finalproject.utils.ApplicationConstants;
 import com.wallaclone.finalproject.utils.JWTUtils;
@@ -30,9 +29,6 @@ public class JWTAuthFIlter extends OncePerRequestFilter {
 	@Autowired
 	CustomUserDetailsService customUserDetailsService;
 
-	@Autowired
-	HttpServletResponse httpServletResponse;
-
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
@@ -49,18 +45,12 @@ public class JWTAuthFIlter extends OncePerRequestFilter {
 			UserDetails userDetails = customUserDetailsService.loadUserByUsername(userApodo);
 
 			if (jwtUtils.isTokenValid(jwtToken, userDetails)) {
-				if(jwtUtils.isTokenExpired(jwtToken)) {
-					String newToken = jwtUtils.generateToken(userDetails);
-	                httpServletResponse.addHeader(ApplicationConstants.AUTHORIZATION_HEADER, "Bearer " + newToken);
-				}
 				SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
 				UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails, null,
 						userDetails.getAuthorities());
 				token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 				securityContext.setAuthentication(token);
 				SecurityContextHolder.setContext(securityContext);
-			} else {
-				throw new TokenInvalidException("El token JWT no es válido.");
 			}
 		}
 		filterChain.doFilter(request, response);
