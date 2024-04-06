@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
@@ -26,6 +27,7 @@ import com.wallaclone.finalproject.dto.ResponseAnuncioDto;
 import com.wallaclone.finalproject.dto.ResponseCategoriaDto;
 import com.wallaclone.finalproject.entity.Anuncio;
 import com.wallaclone.finalproject.entity.Categoria;
+import com.wallaclone.finalproject.entity.Usuario;
 import com.wallaclone.finalproject.repository.AnunciosRepository;
 import com.wallaclone.finalproject.repository.AnunciosTagsRepository;
 import com.wallaclone.finalproject.repository.CategoriasRepository;
@@ -117,8 +119,14 @@ public class AnunciosServiceImpl implements AnunciosService {
 			if (request.isTransaccion() != null) {
 				predicates.add(criteriaBuilder.equal(root.get("transacion"), request.isTransaccion()));
 			}
-
+			
+			if (request.getUsuario() != null && !request.getUsuario().isEmpty()) {
+				Join<Anuncio, Usuario> usuarioJoin = root.join("usuario", JoinType.INNER);
+				predicates.add(criteriaBuilder.equal(usuarioJoin.get("apodo"), request.getUsuario()));
+			}
+			
 			return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+			
 		};
 
 		Page<Anuncio> paginacionAnuncios;
