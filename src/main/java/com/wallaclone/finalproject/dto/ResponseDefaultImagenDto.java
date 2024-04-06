@@ -3,6 +3,7 @@ package com.wallaclone.finalproject.dto;
 public class ResponseDefaultImagenDto {
 	private byte[] imagen;
 	private String nombre;
+	private String token;
 
 	public byte[] getImagen() {
 		return imagen;
@@ -18,6 +19,14 @@ public class ResponseDefaultImagenDto {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 	
 	

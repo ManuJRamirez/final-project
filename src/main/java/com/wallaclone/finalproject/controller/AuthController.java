@@ -26,54 +26,69 @@ import com.wallaclone.finalproject.dto.RequestNuevoAnuncioDto;
 import com.wallaclone.finalproject.dto.RequestSignupDto;
 import com.wallaclone.finalproject.dto.ResponseDefaultImagenDto;
 import com.wallaclone.finalproject.dto.ResponseErrorDto;
-import com.wallaclone.finalproject.dto.ResponseLoginDto;
+import com.wallaclone.finalproject.dto.ResponseTokenDto;
+import com.wallaclone.finalproject.dto.ResponseUsuarioDto;
 import com.wallaclone.finalproject.dto.ResponseNuevoAnuncioDto;
 import com.wallaclone.finalproject.service.AuthService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    AuthService authService;
+	@Autowired
+	AuthService authService;
 
-    @PostMapping("/signup")
-    public ResponseEntity<String> signUp(@RequestBody RequestSignupDto request){
-    	authService.signUp(request);
+	@PostMapping("/signup")
+	public ResponseEntity<String> signUp(@RequestBody RequestSignupDto request) {
+		authService.signUp(request);
 		return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-    @PostMapping("/signin") //login
-    public ResponseEntity<ResponseLoginDto> signIn(@RequestBody RequestLoginDto request){
-        return ResponseEntity.ok(authService.signIn(request));
-    }
-    
+	}
+
+	@PostMapping("/signin") // login
+	public ResponseEntity<ResponseTokenDto> signIn(@RequestBody RequestLoginDto request) {
+		return ResponseEntity.ok(authService.signIn(request));
+	}
+
 	@PostMapping("/nuevoanuncio")
-	public ResponseEntity<ResponseNuevoAnuncioDto> nuevoAnuncio(@RequestBody RequestNuevoAnuncioDto request){
-		return new ResponseEntity<ResponseNuevoAnuncioDto>(authService.nuevoAnuncio(request), HttpStatus.CREATED);
+	public ResponseEntity<ResponseNuevoAnuncioDto> nuevoAnuncio(@RequestBody RequestNuevoAnuncioDto request, HttpServletRequest httpRequest) {
+		String refreshedToken = (String) httpRequest.getAttribute("refreshedToken");
+		return new ResponseEntity<ResponseNuevoAnuncioDto>(authService.nuevoAnuncio(request, refreshedToken), HttpStatus.CREATED);
 	}
 
 	@GetMapping("/defaultimage")
 	public ResponseEntity<ResponseDefaultImagenDto>	defaultimagedto() throws IOException {
 		return new ResponseEntity<ResponseDefaultImagenDto>(authService.getDefaultImagen(), HttpStatus.OK);
 	}
-    
+
 	@PostMapping("/nuevapassword")
 	public ResponseEntity<String> nuevaPassword(@RequestBody RequestNuevaPasswordDto request){
 		authService.nuevaPassword(request);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-	
+
 	@DeleteMapping("/borraranuncio/{id}")
-	public ResponseEntity<String> borrarAnuncio(@PathVariable String id){
-		authService.borrarAnuncio(id);
-		return new ResponseEntity<String>(HttpStatus.OK);
+	public ResponseEntity<ResponseTokenDto> borrarAnuncio(@PathVariable String id, HttpServletRequest httpRequest) {
+		String refreshedToken = (String) httpRequest.getAttribute("refreshedToken");
+		return new ResponseEntity<ResponseTokenDto>(authService.borrarAnuncio(id, refreshedToken), HttpStatus.OK);
 	}
-	
+
 	@PutMapping("/actualizaranuncio/{id}")
-	public ResponseEntity<ResponseNuevoAnuncioDto> actualizarAnuncio(@PathVariable String id, @RequestBody RequestNuevoAnuncioDto request){
-		return new ResponseEntity<ResponseNuevoAnuncioDto>(authService.actualizarAnuncio(id, request), HttpStatus.CREATED);
+	public ResponseEntity<ResponseNuevoAnuncioDto> actualizarAnuncio(@PathVariable String id,
+			@RequestBody RequestNuevoAnuncioDto request, HttpServletRequest httpRequest) {
+		String refreshedToken = (String) httpRequest.getAttribute("refreshedToken");
+
+		return new ResponseEntity<ResponseNuevoAnuncioDto>(authService.actualizarAnuncio(id, request, refreshedToken),
+				HttpStatus.CREATED);
 	}
-	
+
+	@GetMapping("/usuarioPorApodo/{apodo}")
+	public ResponseEntity<ResponseUsuarioDto> usuarioPorApodo(@PathVariable String apodo, HttpServletRequest httpRequest) throws IOException {
+		String refreshedToken = (String) httpRequest.getAttribute("refreshedToken");
+		return new ResponseEntity<ResponseUsuarioDto>(authService.obtenerUsuarioPorApodo(apodo, refreshedToken), HttpStatus.OK);
+	}
+
 	@ExceptionHandler(value = MethodArgumentNotValidException.class)
 	public ResponseEntity<ResponseErrorDto> handleValidationsException(MethodArgumentNotValidException exception) {
 		List<String> errors = new ArrayList<>();
@@ -97,4 +112,3 @@ public class AuthController {
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }
-

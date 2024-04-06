@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.Date;
-import java.util.Optional;
+import java.text.SimpleDateFormat;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +22,9 @@ import com.wallaclone.finalproject.dto.RequestNuevaPasswordDto;
 import com.wallaclone.finalproject.dto.RequestNuevoAnuncioDto;
 import com.wallaclone.finalproject.dto.RequestSignupDto;
 import com.wallaclone.finalproject.dto.ResponseDefaultImagenDto;
-import com.wallaclone.finalproject.dto.ResponseLoginDto;
 import com.wallaclone.finalproject.dto.ResponseNuevoAnuncioDto;
+import com.wallaclone.finalproject.dto.ResponseTokenDto;
+import com.wallaclone.finalproject.dto.ResponseUsuarioDto;
 import com.wallaclone.finalproject.entity.Anuncio;
 import com.wallaclone.finalproject.entity.AnuncioTags;
 import com.wallaclone.finalproject.entity.Imagen;
@@ -70,6 +71,8 @@ public class AuthServiceImpl implements AuthService {
 	@Autowired
 	ModelMapper modelMapper;
 
+	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	
 	@Override
 	public void signUp(RequestSignupDto request) {
 		Usuario usuario = modelMapper.map(request, Usuario.class);
@@ -79,8 +82,8 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
-	public ResponseLoginDto signIn(RequestLoginDto request) {
-		ResponseLoginDto response = new ResponseLoginDto();
+	public ResponseTokenDto signIn(RequestLoginDto request) {
+		ResponseTokenDto response = new ResponseTokenDto();
 
 		var user = usuariosRepository.findByApodo(request.getApodo()).orElseThrow(() -> new CustomException(
 				"El usuario " + request.getApodo() + " no se encuentra en la base de datos."));
@@ -100,7 +103,7 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	@Transactional
-	public ResponseNuevoAnuncioDto nuevoAnuncio(RequestNuevoAnuncioDto request) {
+	public ResponseNuevoAnuncioDto nuevoAnuncio(RequestNuevoAnuncioDto request, String refreshedToken) {
 		Anuncio anuncio = modelMapper.map(request, Anuncio.class);
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String apodo = authentication.getName();
@@ -130,6 +133,7 @@ public class AuthServiceImpl implements AuthService {
 		String titulo = anuncioGuardado.getTitulo();
 		response.setId(id);
 		response.setTitulo(titulo);
+        response.setToken(refreshedToken);
 		return response;
 	}
 
@@ -173,19 +177,22 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	@Transactional
-	public void borrarAnuncio(String id) {
+	public ResponseTokenDto borrarAnuncio(String id, String refreshedToken) {
+		ResponseTokenDto response = new ResponseTokenDto();
 		Long idAnuncio = Long.valueOf(id);
 		if (anunciosRepository.existsById(idAnuncio)) {
 			anunciosRepository.customDelete(idAnuncio);
 		} else {
 			throw new EntityExistsException("El anuncio con el ID " + idAnuncio + "no existe");
 		}
+		response.setToken(refreshedToken);
+        return response;
 
 	}
 
 	@Override
 	@Transactional
-	public ResponseNuevoAnuncioDto actualizarAnuncio(String id, RequestNuevoAnuncioDto request) {
+	public ResponseNuevoAnuncioDto actualizarAnuncio(String id, RequestNuevoAnuncioDto request, String refreshedToken) {
 		Anuncio anuncio = anunciosRepository.getReferenceById(Long.valueOf(id));
 	    if (anuncio != null) {
 	        modelMapper.map(request, anuncio); 
@@ -214,10 +221,22 @@ public class AuthServiceImpl implements AuthService {
 	        ResponseNuevoAnuncioDto response = new ResponseNuevoAnuncioDto();
 	        response.setId(anuncioActualizado.getId());
 	        response.setTitulo(anuncioActualizado.getTitulo());
+	        response.setToken(refreshedToken);
+	        
 	        return response;
 	    } else {
 	        // Manejar el caso en que no se encuentre el anuncio con el ID dado
 	        throw new CustomException("Anuncio con ID " + id + " no encontrado");
 	    }
+	}
+
+	@Override
+	public ResponseUsuarioDto obtenerUsuarioPorApodo(String apodo, String refreshedToken) {
+		Usuario user = usuariosRepository.findByApodo(apodo).orElseThrow(() -> new CustomException(
+				"El usuario " + apodo + " no se encuentra en la base de datos."));		
+		ResponseUsuarioDto response = modelMapper.map(user, ResponseUsuarioDto.class);
+		response.setFechaNacimiento(sdf.format(user.getFechaNacimiento()));
+        response.setToken(refreshedToken);
+		return response;
 	}
 }

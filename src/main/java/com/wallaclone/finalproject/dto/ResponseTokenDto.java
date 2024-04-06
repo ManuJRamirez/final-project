@@ -1,6 +1,6 @@
 package com.wallaclone.finalproject.dto;
 
-public class ResponseLoginDto {
+public class ResponseTokenDto {
 	public String token;
 
 	public String getToken() {
