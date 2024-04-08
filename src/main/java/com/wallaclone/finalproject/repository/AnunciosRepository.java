@@ -12,8 +12,9 @@ import com.wallaclone.finalproject.entity.Anuncio;
 
 @Repository
 public interface AnunciosRepository extends JpaRepository<Anuncio, Long> {
-	 Page<Anuncio> findAll(Specification<Anuncio> spec, Pageable pageable);
-		@Modifying
-		@Query(value = "delete from anuncios where id = ?1", nativeQuery = true)
-		void customDelete(Long id);
+	Page<Anuncio> findAll(Specification<Anuncio> spec, Pageable pageable);
+
+	@Modifying
+	@Query(value = "delete from anuncios where id = ?1", nativeQuery = true)
+	void customDelete(Long id);
 }

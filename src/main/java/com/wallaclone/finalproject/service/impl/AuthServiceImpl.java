@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.Date;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Optional;
 
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.wallaclone.finalproject.dto.RequestActualizarUsuarioDto;
+import com.wallaclone.finalproject.dto.RequestBajaUsuarioDto;
 import com.wallaclone.finalproject.dto.RequestLoginDto;
 import com.wallaclone.finalproject.dto.RequestNuevaPasswordDto;
 import com.wallaclone.finalproject.dto.RequestNuevoAnuncioDto;
@@ -251,7 +253,7 @@ public class AuthServiceImpl implements AuthService {
 		
 		Optional<Usuario> email = usuariosRepository.findByEmail(request.getEmail());
 		
-		if(email.isPresent()) {
+		if(usuario.getEmail() != request.getEmail() && email.isPresent()) {
 	        throw new CustomException("El email " + request.getEmail() + " ya se encuentra en la base de datos.");
 		}
 		
@@ -268,7 +270,11 @@ public class AuthServiceImpl implements AuthService {
 		}
 		
 		if(request.getFechaNacimiento() != null) {
-			usuario.setFechaNacimiento(request.getFechaNacimiento());
+			try {
+				usuario.setFechaNacimiento(sdf.parse(request.getFechaNacimiento()));
+			} catch (ParseException e) {
+				throw new CustomException("Formato de fecha de nacimiento inválido: " + request.getFechaNacimiento());
+			}
 		}
 		
 		usuario.setNotificacion(request.isNotificacion());	
@@ -278,5 +284,15 @@ public class AuthServiceImpl implements AuthService {
         response.setToken(refreshedToken);
 
 		return response;
+	}
+
+	@Override
+	@Transactional
+	public void bajaUsuario(RequestBajaUsuarioDto request) {
+		
+		usuariosRepository.findByApodo(request.getApodo()).orElseThrow(() -> new CustomException(
+				"El usuario " + request.getApodo() + " no se encuentra en la base de datos."));
+		usuariosRepository.customDeleteByApodo(request.getApodo());		
+		
 	}
 }

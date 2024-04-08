@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.wallaclone.finalproject.dto.RequestActualizarUsuarioDto;
+import com.wallaclone.finalproject.dto.RequestBajaUsuarioDto;
 import com.wallaclone.finalproject.dto.RequestLoginDto;
 import com.wallaclone.finalproject.dto.RequestNuevaPasswordDto;
 import com.wallaclone.finalproject.dto.RequestNuevoAnuncioDto;
@@ -94,6 +95,12 @@ public class AuthController {
 	public ResponseEntity<ResponseTokenDto> actualizarUsuario(@RequestBody RequestActualizarUsuarioDto request, HttpServletRequest httpRequest) {
 		String refreshedToken = (String) httpRequest.getAttribute("refreshedToken");
 		return new ResponseEntity<ResponseTokenDto>(authService.actualizarUsuario(request, refreshedToken), HttpStatus.OK);
+	}
+
+	@DeleteMapping("/bajaUsuario")
+	public ResponseEntity<String> bajaUsuario(@RequestBody RequestBajaUsuarioDto request){
+		authService.bajaUsuario(request);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	@ExceptionHandler(value = MethodArgumentNotValidException.class)

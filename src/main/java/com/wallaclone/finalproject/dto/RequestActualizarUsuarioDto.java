@@ -8,7 +8,7 @@ public class RequestActualizarUsuarioDto {
 	private String nombre;
 	private String apellidos;
 	private String email;
-	private Date fechaNacimiento;
+	private String fechaNacimiento;
 	private boolean notificacion;
 	
 	public String getApodo() {
@@ -43,11 +43,11 @@ public class RequestActualizarUsuarioDto {
 		this.email = email;
 	}
 
-	public Date getFechaNacimiento() {
+	public String getFechaNacimiento() {
 		return fechaNacimiento;
 	}
 
-	public void setFechaNacimiento(Date fechaNacimiento) {
+	public void setFechaNacimiento(String fechaNacimiento) {
 		this.fechaNacimiento = fechaNacimiento;
 	}
 
