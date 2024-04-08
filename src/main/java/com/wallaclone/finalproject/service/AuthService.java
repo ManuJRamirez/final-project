@@ -2,6 +2,7 @@ package com.wallaclone.finalproject.service;
 
 import java.io.IOException;
 
+import com.wallaclone.finalproject.dto.RequestActualizarUsuarioDto;
 import com.wallaclone.finalproject.dto.RequestLoginDto;
 import com.wallaclone.finalproject.dto.RequestNuevaPasswordDto;
 import com.wallaclone.finalproject.dto.RequestNuevoAnuncioDto;
@@ -29,4 +30,5 @@ public interface AuthService {
 	
 	public ResponseUsuarioDto obtenerUsuarioPorApodo(String apodo, String refreshedToken);
 	
+	public ResponseTokenDto actualizarUsuario(RequestActualizarUsuarioDto request, String refreshedToken);
 }

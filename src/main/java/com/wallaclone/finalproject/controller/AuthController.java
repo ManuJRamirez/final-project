@@ -20,15 +20,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.wallaclone.finalproject.dto.RequestActualizarUsuarioDto;
 import com.wallaclone.finalproject.dto.RequestLoginDto;
 import com.wallaclone.finalproject.dto.RequestNuevaPasswordDto;
 import com.wallaclone.finalproject.dto.RequestNuevoAnuncioDto;
 import com.wallaclone.finalproject.dto.RequestSignupDto;
 import com.wallaclone.finalproject.dto.ResponseDefaultImagenDto;
 import com.wallaclone.finalproject.dto.ResponseErrorDto;
+import com.wallaclone.finalproject.dto.ResponseNuevoAnuncioDto;
 import com.wallaclone.finalproject.dto.ResponseTokenDto;
 import com.wallaclone.finalproject.dto.ResponseUsuarioDto;
-import com.wallaclone.finalproject.dto.ResponseNuevoAnuncioDto;
 import com.wallaclone.finalproject.service.AuthService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -87,6 +88,12 @@ public class AuthController {
 	public ResponseEntity<ResponseUsuarioDto> usuarioPorApodo(@PathVariable String apodo, HttpServletRequest httpRequest) throws IOException {
 		String refreshedToken = (String) httpRequest.getAttribute("refreshedToken");
 		return new ResponseEntity<ResponseUsuarioDto>(authService.obtenerUsuarioPorApodo(apodo, refreshedToken), HttpStatus.OK);
+	}
+
+	@PutMapping("/actualizarUsuario")
+	public ResponseEntity<ResponseTokenDto> actualizarUsuario(@RequestBody RequestActualizarUsuarioDto request, HttpServletRequest httpRequest) {
+		String refreshedToken = (String) httpRequest.getAttribute("refreshedToken");
+		return new ResponseEntity<ResponseTokenDto>(authService.actualizarUsuario(request, refreshedToken), HttpStatus.OK);
 	}
 
 	@ExceptionHandler(value = MethodArgumentNotValidException.class)

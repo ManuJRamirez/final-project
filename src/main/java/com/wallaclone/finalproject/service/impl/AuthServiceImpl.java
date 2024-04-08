@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.wallaclone.finalproject.dto.RequestActualizarUsuarioDto;
 import com.wallaclone.finalproject.dto.RequestLoginDto;
 import com.wallaclone.finalproject.dto.RequestNuevaPasswordDto;
 import com.wallaclone.finalproject.dto.RequestNuevoAnuncioDto;
@@ -237,6 +239,44 @@ public class AuthServiceImpl implements AuthService {
 		ResponseUsuarioDto response = modelMapper.map(user, ResponseUsuarioDto.class);
 		response.setFechaNacimiento(sdf.format(user.getFechaNacimiento()));
         response.setToken(refreshedToken);
+		return response;
+	}
+
+	@Override
+	public ResponseTokenDto actualizarUsuario(RequestActualizarUsuarioDto request, String refreshedToken) {
+		ResponseTokenDto response = new ResponseTokenDto();
+
+		Usuario usuario = usuariosRepository.findByApodo(request.getApodo()).orElseThrow(() -> new CustomException(
+				"El usuario " + request.getApodo() + " no se encuentra en la base de datos."));
+		
+		Optional<Usuario> email = usuariosRepository.findByEmail(request.getEmail());
+		
+		if(email.isPresent()) {
+	        throw new CustomException("El email " + request.getEmail() + " ya se encuentra en la base de datos.");
+		}
+		
+		if(request.getNombre() != null && !request.getNombre().isEmpty()) {
+			usuario.setNombre(request.getNombre());
+		}
+		
+		if(request.getApellidos() != null && !request.getApellidos().isEmpty()) {
+			usuario.setApellidos(request.getApellidos());
+		}
+		
+		if(request.getEmail() != null && !request.getEmail().isEmpty()) {
+			usuario.setEmail(request.getEmail());
+		}
+		
+		if(request.getFechaNacimiento() != null) {
+			usuario.setFechaNacimiento(request.getFechaNacimiento());
+		}
+		
+		usuario.setNotificacion(request.isNotificacion());	
+		
+		usuariosRepository.save(usuario);
+
+        response.setToken(refreshedToken);
+
 		return response;
 	}
 }
