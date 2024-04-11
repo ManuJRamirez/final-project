@@ -245,15 +245,14 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
-	public ResponseTokenDto actualizarUsuario(RequestActualizarUsuarioDto request, String refreshedToken) {
-		ResponseTokenDto response = new ResponseTokenDto();
+	public ResponseUsuarioDto actualizarUsuario(RequestActualizarUsuarioDto request, String refreshedToken) {
 
 		Usuario usuario = usuariosRepository.findByApodo(request.getApodo()).orElseThrow(() -> new CustomException(
 				"El usuario " + request.getApodo() + " no se encuentra en la base de datos."));
 		
 		Optional<Usuario> email = usuariosRepository.findByEmail(request.getEmail());
 		
-		if(usuario.getEmail() != request.getEmail() && email.isPresent()) {
+		if(!usuario.getEmail().equals(request.getEmail()) && email.isPresent()) {
 	        throw new CustomException("El email " + request.getEmail() + " ya se encuentra en la base de datos.");
 		}
 		
@@ -279,8 +278,10 @@ public class AuthServiceImpl implements AuthService {
 		
 		usuario.setNotificacion(request.isNotificacion());	
 		
-		usuariosRepository.save(usuario);
-
+		Usuario user = usuariosRepository.save(usuario);
+		
+		ResponseUsuarioDto response = modelMapper.map(user, ResponseUsuarioDto.class);
+		response.setFechaNacimiento(sdf.format(user.getFechaNacimiento()));
         response.setToken(refreshedToken);
 
 		return response;

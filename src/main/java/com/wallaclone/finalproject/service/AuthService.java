@@ -31,7 +31,7 @@ public interface AuthService {
 	
 	public ResponseUsuarioDto obtenerUsuarioPorApodo(String apodo, String refreshedToken);
 	
-	public ResponseTokenDto actualizarUsuario(RequestActualizarUsuarioDto request, String refreshedToken);
+	public ResponseUsuarioDto actualizarUsuario(RequestActualizarUsuarioDto request, String refreshedToken);
 	
 	public void bajaUsuario(RequestBajaUsuarioDto request);
 }

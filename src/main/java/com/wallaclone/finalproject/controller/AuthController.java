@@ -92,9 +92,9 @@ public class AuthController {
 	}
 
 	@PutMapping("/actualizarUsuario")
-	public ResponseEntity<ResponseTokenDto> actualizarUsuario(@RequestBody RequestActualizarUsuarioDto request, HttpServletRequest httpRequest) {
+	public ResponseEntity<ResponseUsuarioDto> actualizarUsuario(@RequestBody RequestActualizarUsuarioDto request, HttpServletRequest httpRequest) {
 		String refreshedToken = (String) httpRequest.getAttribute("refreshedToken");
-		return new ResponseEntity<ResponseTokenDto>(authService.actualizarUsuario(request, refreshedToken), HttpStatus.OK);
+		return new ResponseEntity<ResponseUsuarioDto>(authService.actualizarUsuario(request, refreshedToken), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/bajaUsuario")
