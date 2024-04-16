@@ -34,14 +34,31 @@ public class JWTAuthFIlter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		final String authHeader = request.getHeader(ApplicationConstants.AUTHORIZATION_HEADER);
+
+		String authHeader = request.getHeader(ApplicationConstants.AUTHORIZATION_HEADER);
 		String jwtToken;
 		String userApodo;
+		
+        if ((authHeader == null || authHeader.isBlank()) && 
+        		ApplicationConstants.WEBSOCKET.equalsIgnoreCase(request.getHeader("Upgrade"))) {
+            String websocketProtocolHeader = request.getHeader(ApplicationConstants.SEC_WEBSOCKET_POROTOCOL);
+            if (websocketProtocolHeader != null && websocketProtocolHeader.trim().startsWith(ApplicationConstants.AUTHORIZATION_HEADER)) {
+                int index = websocketProtocolHeader.indexOf(" ");
+                if (index != -1 && index < websocketProtocolHeader.length() - 1) {
+                	 authHeader = websocketProtocolHeader.substring(index + 1).trim();
+                }
+            }            
+        }
+        
 		if (authHeader == null || authHeader.isBlank()) {
 			filterChain.doFilter(request, response);
 			return;
 		}
-		jwtToken = authHeader.substring(7);
+		if(authHeader.contains(" ")) {
+			jwtToken = authHeader.substring(7);
+		} else {
+			jwtToken = authHeader;
+		}
 		try {
 			userApodo = jwtUtils.extractUsername(jwtToken);			
 		} catch (MalformedJwtException e) {

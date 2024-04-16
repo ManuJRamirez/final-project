@@ -4,6 +4,8 @@ public class ApplicationConstants {
 	
 	public static final String USER_ROLE = "USER";
 	public static final String AUTHORIZATION_HEADER = "Authorization";
+	public static final String SEC_WEBSOCKET_POROTOCOL = "sec-websocket-protocol";
+	public static final String WEBSOCKET = "websocket";
 	
 	public static final int TAMANO_PAGINA =  12;
 

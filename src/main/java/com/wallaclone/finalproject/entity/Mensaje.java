@@ -9,45 +9,46 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "chats")
-public class Chat {
+@Table(name = "mensajes")
+public class Mensaje {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private Long idAnuncio;
+	private Long idChat;
 	private Long idUsuario;
-	private Date fechaUltimoMensaje;
-
+	private String mensaje;
+	private Date fecha;
+	
 	public Long getId() {
 		return id;
 	}
-
 	public void setId(Long id) {
 		this.id = id;
 	}
-
-	public Long getIdAnuncio() {
-		return idAnuncio;
+	public Long getIdChat() {
+		return idChat;
 	}
-
-	public void setIdAnuncio(Long idAnuncio) {
-		this.idAnuncio = idAnuncio;
+	public void setIdChat(Long idChat) {
+		this.idChat = idChat;
 	}
-
 	public Long getIdUsuario() {
 		return idUsuario;
 	}
-
 	public void setIdUsuario(Long idUsuario) {
 		this.idUsuario = idUsuario;
 	}
-
-	public Date getFechaUltimoMensaje() {
-		return fechaUltimoMensaje;
+	public String getMensaje() {
+		return mensaje;
 	}
-
-	public void setFechaUltimoMensaje(Date fechaUltimoMensaje) {
-		this.fechaUltimoMensaje = fechaUltimoMensaje;
+	public void setMensaje(String mensaje) {
+		this.mensaje = mensaje;
 	}
+	public Date getFecha() {
+		return fecha;
+	}
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
+	}
+	
 
 }
