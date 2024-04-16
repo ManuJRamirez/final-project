@@ -44,7 +44,7 @@ public class WebSocketServiceImpl implements WebSocketService {
 		String apodo = userProperties.get("apodo").toString();		
 
 		Chat chat;
-		if(idChat != null) {
+		if(idChat != 0l) {
 			chat = chatsRepository.findById(idChat).orElseThrow(
 				() -> new CustomException("El chat con id " + idChat + " no se encuentra en la base de datos."));		
 		} else {
@@ -92,7 +92,7 @@ public class WebSocketServiceImpl implements WebSocketService {
 		if (chat != null) {
 			enviarMensajesAnteriores(session, chat, apodo);
 		}
-		session.getUserProperties().put("idChat", chat.getId());
+		session.getUserProperties().put("idChat", chat != null ? chat.getId() : 0l);
 		session.getUserProperties().put("idUsuario", usuario.getId());
 		session.getUserProperties().put("apodo", usuario.getApodo());
 		session.getUserProperties().put("idAnucio", idAnuncioLong);
