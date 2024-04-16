@@ -8,4 +8,6 @@ import com.wallaclone.finalproject.entity.Chat;
 @Repository
 public interface ChatsRepository extends JpaRepository<Chat, Long> {
 
+    Chat findByIdAnuncioAndIdUsuario(Long idAnuncio, Long idUsuario);
+
 }
