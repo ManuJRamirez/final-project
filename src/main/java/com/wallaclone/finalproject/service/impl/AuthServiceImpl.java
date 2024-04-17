@@ -257,7 +257,9 @@ public class AuthServiceImpl implements AuthService {
 		Usuario user = usuariosRepository.findByApodo(apodo).orElseThrow(
 				() -> new CustomException("El usuario " + apodo + " no se encuentra en la base de datos."));
 		ResponseUsuarioDto response = modelMapper.map(user, ResponseUsuarioDto.class);
-		response.setFechaNacimiento(sdf.format(user.getFechaNacimiento()));
+		if (user.getFechaNacimiento() != null) {
+			response.setFechaNacimiento(sdf.format(user.getFechaNacimiento()));
+		}
 		response.setToken(refreshedToken);
 		return response;
 	}
