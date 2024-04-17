@@ -13,6 +13,7 @@ import javax.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.wallaclone.finalproject.dto.RequestEnviarEmailDto;
 import com.wallaclone.finalproject.entity.Usuario;
@@ -49,6 +50,7 @@ public class EnviarEmailServiceImpl implements EnviarEmailService {
 	private JWTUtils jwtUtils;
 
 	@Override
+	@Transactional
 	public void enviarEmailRecuperacion(RequestEnviarEmailDto request) {
 
 		Usuario usuario = usuariosRepository.findByEmail(request.getEmail())

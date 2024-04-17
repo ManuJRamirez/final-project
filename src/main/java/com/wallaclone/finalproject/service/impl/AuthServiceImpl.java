@@ -78,6 +78,7 @@ public class AuthServiceImpl implements AuthService {
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
 	@Override
+	@Transactional
 	public void signUp(RequestSignupDto request) {
 		Usuario usuario = modelMapper.map(request, Usuario.class);
 		usuario.setContrasenia(passwordEncoder.encode(request.getContrasenia()));
@@ -86,6 +87,7 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
+	@Transactional
 	public ResponseTokenDto signIn(RequestLoginDto request) {
 		ResponseTokenDto response = new ResponseTokenDto();
 
@@ -142,6 +144,7 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
+	@Transactional
 	public ResponseDefaultImagenDto getDefaultImagen() throws IOException {
 		File file = new File(ApplicationConstants.DEFAULT_IMG);
 		if (!file.exists()) {
@@ -235,6 +238,7 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
+	@Transactional
 	public ResponseUsuarioDto obtenerUsuarioPorApodo(String apodo, String refreshedToken) {
 		Usuario user = usuariosRepository.findByApodo(apodo).orElseThrow(() -> new CustomException(
 				"El usuario " + apodo + " no se encuentra en la base de datos."));		
@@ -245,6 +249,7 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
+	@Transactional
 	public ResponseUsuarioDto actualizarUsuario(RequestActualizarUsuarioDto request, String refreshedToken) {
 
 		Usuario usuario = usuariosRepository.findByApodo(request.getApodo()).orElseThrow(() -> new CustomException(

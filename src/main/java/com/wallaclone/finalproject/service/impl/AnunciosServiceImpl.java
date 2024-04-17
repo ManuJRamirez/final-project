@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.wallaclone.finalproject.dto.ImagenDto;
 import com.wallaclone.finalproject.dto.RequestAnunciosFiltradosDto;
@@ -59,6 +60,7 @@ public class AnunciosServiceImpl implements AnunciosService {
 	ModelMapper modelMapper;
 
 	@Override
+	@Transactional
 	public ResponseAnuncioDto getAnuncio(String id) {
 
 		Anuncio anuncio = anunciosRepository.findById(Long.valueOf(id)).get();
@@ -83,12 +85,14 @@ public class AnunciosServiceImpl implements AnunciosService {
 	}
 
 	@Override
+	@Transactional
 	public List<ResponseCategoriaDto> getCategorias() {
 		return categoriasRepository.findAll().stream()
 				.map(categoria -> modelMapper.map(categoria, ResponseCategoriaDto.class)).collect(Collectors.toList());
 	}
 
 	@Override
+	@Transactional
 	public Page<ResponseAnuncioDto> getAnunciosFiltrados(RequestAnunciosFiltradosDto request) {
 		PageRequest paginaRequest = PageRequest.of(request.getPagina(), ApplicationConstants.TAMANO_PAGINA);
 
