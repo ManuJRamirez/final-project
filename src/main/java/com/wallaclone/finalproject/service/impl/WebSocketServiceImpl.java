@@ -32,21 +32,22 @@ public class WebSocketServiceImpl implements WebSocketService {
 
 	private MensajesRepository mensajesRepository = ApplicationContextProvider.getBean(MensajesRepository.class);
 
+
 	@Override
 	public void onMessage(Session session, String text) {
 
 		Set<Session> openSessions = session.getOpenSessions();
 		Map<String, Object> userProperties = session.getUserProperties();
-		
-		Long idChat = (Long) userProperties.get("idChat");		
-		Long idUsuario = (Long) userProperties.get("idUsuario");		
-		Long idAnucio = (Long) userProperties.get("idAnucio");		
-		String apodo = userProperties.get("apodo").toString();		
+
+		Long idChat = (Long) userProperties.get("idChat");
+		Long idUsuario = (Long) userProperties.get("idUsuario");
+		Long idAnucio = (Long) userProperties.get("idAnucio");
+		String apodo = userProperties.get("apodo").toString();
 
 		Chats chats;
-		if(idChat != 0l) {
+		if (idChat != 0l) {
 			chats = chatsRepository.findById(idChat).orElseThrow(
-				() -> new CustomException("El chat con id " + idChat + " no se encuentra en la base de datos."));		
+					() -> new CustomException("El chat con id " + idChat + " no se encuentra en la base de datos."));
 		} else {
 			chats = new Chats();
 			chats.setIdAnuncio(idAnucio);
@@ -60,24 +61,40 @@ public class WebSocketServiceImpl implements WebSocketService {
 		mensaje.setIdUsuario(idUsuario);
 		mensaje.setMensaje(text);
 		mensaje.setFecha(new Date());
-		mensajesRepository.save(mensaje);		
-		
+		mensajesRepository.save(mensaje);
+
 		MensajeDto mensajeDto = new MensajeDto();
 		mensajeDto.setMensaje(text);
 		mensajeDto.setUsuario(apodo);
 		mensajeDto.setFecha(new Date());
-		mensajeDto.setMe(true);
 		
+		mensajeDto.setMe(true);
+//		
+//		ObjectMapper objectMapper = new ObjectMapper();
+//		try {
+//			String mensajeJson = objectMapper.writeValueAsString(mensajeDto);
+//			session.getBasicRemote().sendText(mensajeJson);	
+//		} catch (JsonProcessingException e) {
+//			new CustomException("Error al procesar el json: " + e.getMessage());
+//		} catch (IOException e) {
+//			new CustomException("Error: " + e.getMessage());
+//		}
 		ObjectMapper objectMapper = new ObjectMapper();
+		String mensajeJson;
 		try {
-			String mensajeJson = objectMapper.writeValueAsString(mensajeDto);
-			session.getBasicRemote().sendText(mensajeJson);	
+			mensajeJson = objectMapper.writeValueAsString(mensajeDto);
 		} catch (JsonProcessingException e) {
-			new CustomException("Error al procesar el json: " + e.getMessage());
-		} catch (IOException e) {
-			new CustomException("Error: " + e.getMessage());
+			throw new CustomException("Error al procesar el json: " + e.getMessage());
 		}
 
+		// Iterar sobre todas las sesiones abiertas y enviar el mensaje
+		for (Session openSession : session.getOpenSessions()) {
+			try {
+				openSession.getBasicRemote().sendText(mensajeJson);
+			} catch (IOException e) {
+				throw new CustomException("Error al enviar el mensaje: " + e.getMessage());
+			}
+		}
 	}
 
 	@Override
@@ -96,6 +113,7 @@ public class WebSocketServiceImpl implements WebSocketService {
 		session.getUserProperties().put("idUsuario", usuario.getId());
 		session.getUserProperties().put("apodo", usuario.getApodo());
 		session.getUserProperties().put("idAnucio", idAnuncioLong);
+
 	}
 
 	private void enviarMensajesAnteriores(Session session, Chats chats, String apodo) {
@@ -119,12 +137,13 @@ public class WebSocketServiceImpl implements WebSocketService {
 	}
 
 	public MensajeDto convertirAMensajeDto(Mensaje mensaje, String apodo) {
+
 		MensajeDto mensajeDto = new MensajeDto();
 		mensajeDto.setFecha(mensaje.getFecha());
 		mensajeDto.setMensaje(mensaje.getMensaje());
 
-		Usuario usuario = usuariosRepository.findById(mensaje.getIdUsuario()).orElseThrow(
-				() -> new CustomException("El usuario con id " + mensaje.getIdUsuario() + " no se encuentra en la base de datos."));	
+		Usuario usuario = usuariosRepository.findById(mensaje.getIdUsuario()).orElseThrow(() -> new CustomException(
+				"El usuario con id " + mensaje.getIdUsuario() + " no se encuentra en la base de datos."));
 
 		if (usuario == null) {
 			throw new CustomException(
@@ -143,9 +162,9 @@ public class WebSocketServiceImpl implements WebSocketService {
 
 		Long idChatLong = Long.parseLong(idChat);
 		Long idAnuncioLong = Long.parseLong(idAnuncio);
-		
+
 		Chats chats = chatsRepository.findById(idChatLong).orElseThrow(
-				() -> new CustomException("El chat con id " + idChat + " no se encuentra en la base de datos."));	
+				() -> new CustomException("El chat con id " + idChat + " no se encuentra en la base de datos."));
 
 		if (chats != null) {
 			enviarMensajesAnteriores(session, chats, apodo);
@@ -155,6 +174,5 @@ public class WebSocketServiceImpl implements WebSocketService {
 		session.getUserProperties().put("apodo", usuario.getApodo());
 		session.getUserProperties().put("idAnucio", idAnuncioLong);
 	}
-
 
 }
