@@ -35,14 +35,21 @@ public class WebSocketController {
 		Map<String, List<String>> queryParams = session.getRequestParameterMap();
 	    String idAnuncio = null;
 	    String apodo = null;
+	    String idChat = null;
 	    if (queryParams.containsKey("id")) {
 	        idAnuncio = queryParams.get("id").get(0);
 	    }
 	    if (queryParams.containsKey("apodo")) {
 	        apodo = queryParams.get("apodo").get(0);
 	    }
-		
-		webSocketService.onOpen(session, idAnuncio, apodo);	
+	    if (queryParams.containsKey("idChat")) {
+	    	idChat = queryParams.get("idChat").get(0);
+	    }
+		if(idChat != null) {
+			webSocketService.onOpen(session, idAnuncio, apodo, idChat);
+		} else {
+			webSocketService.onOpen(session, idAnuncio, apodo);
+		}
 		System.out.println(session.getId() + " conexion abierta.");
 	}
 	@OnMessage

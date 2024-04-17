@@ -26,7 +26,7 @@ import com.wallaclone.finalproject.dto.ImagenDto;
 import com.wallaclone.finalproject.dto.RequestAnunciosFiltradosDto;
 import com.wallaclone.finalproject.dto.ResponseAnuncioDto;
 import com.wallaclone.finalproject.dto.ResponseCategoriaDto;
-import com.wallaclone.finalproject.entity.Anuncio;
+import com.wallaclone.finalproject.entity.Anuncios;
 import com.wallaclone.finalproject.entity.Categoria;
 import com.wallaclone.finalproject.entity.Usuario;
 import com.wallaclone.finalproject.repository.AnunciosRepository;
@@ -63,7 +63,7 @@ public class AnunciosServiceImpl implements AnunciosService {
 	@Transactional
 	public ResponseAnuncioDto getAnuncio(String id) {
 
-		Anuncio anuncio = anunciosRepository.findById(Long.valueOf(id)).get();
+		Anuncios anuncio = anunciosRepository.findById(Long.valueOf(id)).get();
 		ResponseAnuncioDto responseAnuncioDto = modelMapper.map(anuncio, ResponseAnuncioDto.class);
 
 		responseAnuncioDto.setApodoCreador(anuncio.getUsuario().getApodo());
@@ -96,11 +96,11 @@ public class AnunciosServiceImpl implements AnunciosService {
 	public Page<ResponseAnuncioDto> getAnunciosFiltrados(RequestAnunciosFiltradosDto request) {
 		PageRequest paginaRequest = PageRequest.of(request.getPagina(), ApplicationConstants.TAMANO_PAGINA);
 
-		Specification<Anuncio> spec = (root, query, criteriaBuilder) -> {
+		Specification<Anuncios> spec = (root, query, criteriaBuilder) -> {
 			List<Predicate> predicates = new ArrayList<>();
 
 			if (request.getCategorias() != null && !request.getCategorias().isEmpty()) {// in categorias
-				Join<Anuncio, Categoria> categoriaJoin = root.join("categorias", JoinType.INNER);
+				Join<Anuncios, Categoria> categoriaJoin = root.join("categorias", JoinType.INNER);
 				In<String> inClause = criteriaBuilder.in(categoriaJoin.get("nombre"));
 				for (String categoria : request.getCategorias()) {
 					inClause.value(categoria);
@@ -125,7 +125,7 @@ public class AnunciosServiceImpl implements AnunciosService {
 			}
 			
 			if (request.getUsuario() != null && !request.getUsuario().isEmpty()) {
-				Join<Anuncio, Usuario> usuarioJoin = root.join("usuario", JoinType.INNER);
+				Join<Anuncios, Usuario> usuarioJoin = root.join("usuario", JoinType.INNER);
 				predicates.add(criteriaBuilder.equal(usuarioJoin.get("apodo"), request.getUsuario()));
 			}
 			
@@ -133,7 +133,7 @@ public class AnunciosServiceImpl implements AnunciosService {
 			
 		};
 
-		Page<Anuncio> paginacionAnuncios;
+		Page<Anuncios> paginacionAnuncios;
 
 		switch (request.getOrden()) {
 		case ApplicationConstants.ORDEN_RECIENTE:

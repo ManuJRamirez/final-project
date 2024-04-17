@@ -28,6 +28,7 @@ import com.wallaclone.finalproject.dto.RequestNuevoAnuncioDto;
 import com.wallaclone.finalproject.dto.RequestSignupDto;
 import com.wallaclone.finalproject.dto.ResponseDefaultImagenDto;
 import com.wallaclone.finalproject.dto.ResponseErrorDto;
+import com.wallaclone.finalproject.dto.ResponseMisChats;
 import com.wallaclone.finalproject.dto.ResponseNuevoAnuncioDto;
 import com.wallaclone.finalproject.dto.ResponseTokenDto;
 import com.wallaclone.finalproject.dto.ResponseUsuarioDto;
@@ -101,6 +102,11 @@ public class AuthController {
 	public ResponseEntity<String> bajaUsuario(@RequestBody RequestBajaUsuarioDto request){
 		authService.bajaUsuario(request);
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	@GetMapping("/misChats")
+	public ResponseEntity<ResponseMisChats>	misChats() throws IOException {
+		return new ResponseEntity<ResponseMisChats>(authService.misChats(), HttpStatus.OK);
 	}
 
 	@ExceptionHandler(value = MethodArgumentNotValidException.class)

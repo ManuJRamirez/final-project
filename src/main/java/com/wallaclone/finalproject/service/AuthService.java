@@ -9,9 +9,10 @@ import com.wallaclone.finalproject.dto.RequestNuevaPasswordDto;
 import com.wallaclone.finalproject.dto.RequestNuevoAnuncioDto;
 import com.wallaclone.finalproject.dto.RequestSignupDto;
 import com.wallaclone.finalproject.dto.ResponseDefaultImagenDto;
+import com.wallaclone.finalproject.dto.ResponseMisChats;
+import com.wallaclone.finalproject.dto.ResponseNuevoAnuncioDto;
 import com.wallaclone.finalproject.dto.ResponseTokenDto;
 import com.wallaclone.finalproject.dto.ResponseUsuarioDto;
-import com.wallaclone.finalproject.dto.ResponseNuevoAnuncioDto;
 
 public interface AuthService {
 
@@ -34,4 +35,6 @@ public interface AuthService {
 	public ResponseUsuarioDto actualizarUsuario(RequestActualizarUsuarioDto request, String refreshedToken);
 	
 	public void bajaUsuario(RequestBajaUsuarioDto request);
+	
+	public ResponseMisChats misChats();
 }

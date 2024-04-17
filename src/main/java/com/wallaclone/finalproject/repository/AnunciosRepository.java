@@ -8,11 +8,11 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.wallaclone.finalproject.entity.Anuncio;
+import com.wallaclone.finalproject.entity.Anuncios;
 
 @Repository
-public interface AnunciosRepository extends JpaRepository<Anuncio, Long> {
-	Page<Anuncio> findAll(Specification<Anuncio> spec, Pageable pageable);
+public interface AnunciosRepository extends JpaRepository<Anuncios, Long> {
+	Page<Anuncios> findAll(Specification<Anuncios> spec, Pageable pageable);
 
 	@Modifying
 	@Query(value = "delete from anuncios where id = ?1", nativeQuery = true)

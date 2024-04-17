@@ -12,7 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wallaclone.finalproject.config.ApplicationContextProvider;
 import com.wallaclone.finalproject.dto.MensajeDto;
-import com.wallaclone.finalproject.entity.Chat;
+import com.wallaclone.finalproject.entity.Chats;
 import com.wallaclone.finalproject.entity.Mensaje;
 import com.wallaclone.finalproject.entity.Usuario;
 import com.wallaclone.finalproject.exceptions.CustomException;
@@ -43,20 +43,20 @@ public class WebSocketServiceImpl implements WebSocketService {
 		Long idAnucio = (Long) userProperties.get("idAnucio");		
 		String apodo = userProperties.get("apodo").toString();		
 
-		Chat chat;
+		Chats chats;
 		if(idChat != 0l) {
-			chat = chatsRepository.findById(idChat).orElseThrow(
+			chats = chatsRepository.findById(idChat).orElseThrow(
 				() -> new CustomException("El chat con id " + idChat + " no se encuentra en la base de datos."));		
 		} else {
-			chat = new Chat();
-			chat.setIdAnuncio(idAnucio);
-			chat.setIdUsuario(idUsuario);
+			chats = new Chats();
+			chats.setIdAnuncio(idAnucio);
+			chats.setIdUsuario(idUsuario);
 		}
-		chat.setFechaUltimoMensaje(new Date());
-		chat = chatsRepository.save(chat);
+		chats.setFechaUltimoMensaje(new Date());
+		chats = chatsRepository.save(chats);
 
 		Mensaje mensaje = new Mensaje();
-		mensaje.setIdChat(chat.getId());
+		mensaje.setIdChat(chats.getId());
 		mensaje.setIdUsuario(idUsuario);
 		mensaje.setMensaje(text);
 		mensaje.setFecha(new Date());
@@ -87,20 +87,20 @@ public class WebSocketServiceImpl implements WebSocketService {
 				() -> new CustomException("El usuario " + apodo + " no se encuentra en la base de datos."));
 
 		Long idAnuncioLong = Long.parseLong(idAnuncio);
-		Chat chat = chatsRepository.findByIdAnuncioAndIdUsuario(idAnuncioLong, usuario.getId());
+		Chats chats = chatsRepository.findByIdAnuncioAndIdUsuario(idAnuncioLong, usuario.getId());
 
-		if (chat != null) {
-			enviarMensajesAnteriores(session, chat, apodo);
+		if (chats != null) {
+			enviarMensajesAnteriores(session, chats, apodo);
 		}
-		session.getUserProperties().put("idChat", chat != null ? chat.getId() : 0l);
+		session.getUserProperties().put("idChat", chats != null ? chats.getId() : 0l);
 		session.getUserProperties().put("idUsuario", usuario.getId());
 		session.getUserProperties().put("apodo", usuario.getApodo());
 		session.getUserProperties().put("idAnucio", idAnuncioLong);
 	}
 
-	private void enviarMensajesAnteriores(Session session, Chat chat, String apodo) {
+	private void enviarMensajesAnteriores(Session session, Chats chats, String apodo) {
 
-		List<Mensaje> mensajesAnteriores = mensajesRepository.findByIdChatOrderByFecha(chat.getId());
+		List<Mensaje> mensajesAnteriores = mensajesRepository.findByIdChatOrderByFecha(chats.getId());
 
 		for (Mensaje mensaje : mensajesAnteriores) {
 			enviarMensaje(session, mensaje, apodo);
@@ -124,7 +124,7 @@ public class WebSocketServiceImpl implements WebSocketService {
 		mensajeDto.setMensaje(mensaje.getMensaje());
 
 		Usuario usuario = usuariosRepository.findById(mensaje.getIdUsuario()).orElseThrow(
-				() -> new CustomException("El chat con id " + mensaje.getIdUsuario() + " no se encuentra en la base de datos."));	
+				() -> new CustomException("El usuario con id " + mensaje.getIdUsuario() + " no se encuentra en la base de datos."));	
 
 		if (usuario == null) {
 			throw new CustomException(
@@ -134,5 +134,27 @@ public class WebSocketServiceImpl implements WebSocketService {
 		mensajeDto.setMe(usuario.getApodo().equals(apodo));
 		return mensajeDto;
 	}
+
+	@Override
+	public void onOpen(Session session, String idAnuncio, String apodo, String idChat) {
+
+		Usuario usuario = usuariosRepository.getOneByApodo(apodo).orElseThrow(
+				() -> new CustomException("El usuario " + apodo + " no se encuentra en la base de datos."));
+
+		Long idChatLong = Long.parseLong(idChat);
+		Long idAnuncioLong = Long.parseLong(idAnuncio);
+		
+		Chats chats = chatsRepository.findById(idChatLong).orElseThrow(
+				() -> new CustomException("El chat con id " + idChat + " no se encuentra en la base de datos."));	
+
+		if (chats != null) {
+			enviarMensajesAnteriores(session, chats, apodo);
+		}
+		session.getUserProperties().put("idChat", chats != null ? chats.getId() : 0l);
+		session.getUserProperties().put("idUsuario", usuario.getId());
+		session.getUserProperties().put("apodo", usuario.getApodo());
+		session.getUserProperties().put("idAnucio", idAnuncioLong);
+	}
+
 
 }
