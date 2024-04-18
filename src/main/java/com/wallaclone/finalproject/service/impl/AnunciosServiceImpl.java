@@ -138,19 +138,19 @@ public class AnunciosServiceImpl implements AnunciosService {
 		switch (request.getOrden()) {
 		case ApplicationConstants.ORDEN_RECIENTE:
 			paginaRequest = PageRequest.of(request.getPagina(), ApplicationConstants.TAMANO_PAGINA,
-					Sort.by("fechaCreacion").descending());
+					Sort.by("fechaCreacion").and(Sort.by("id")).descending());
 			break;
 		case ApplicationConstants.ORDEN_ANTIGUOS:
 			paginaRequest = PageRequest.of(request.getPagina(), ApplicationConstants.TAMANO_PAGINA,
-					Sort.by("fechaCreacion").ascending());
+					Sort.by("fechaCreacion").and(Sort.by("id")).ascending());
 			break;
 		case ApplicationConstants.ORDEN_PRECIO_MIN:
 			paginaRequest = PageRequest.of(request.getPagina(), ApplicationConstants.TAMANO_PAGINA,
-					Sort.by("precio").ascending());
+					Sort.by("precio").and(Sort.by("id")).ascending());
 			break;
 		case ApplicationConstants.ORDEN_PRECIO_MAX:
 			paginaRequest = PageRequest.of(request.getPagina(), ApplicationConstants.TAMANO_PAGINA,
-					Sort.by("precio").descending());
+					Sort.by("precio").and(Sort.by("id")).descending());
 			break;
 		default:
 			break;
