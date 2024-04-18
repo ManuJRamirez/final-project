@@ -79,7 +79,7 @@ public class EnviarEmailServiceImpl implements EnviarEmailService {
 				message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(request.getEmail()));
 				message.setSubject("Recuperación de contraseña");
 				message.setText(
-						"Hola,\n\nHemos recibido una solicitud para recuperar tu contraseña. Si no realizaste esta solicitud, puedes ignorar este correo.\nPara recuperar contraseña pincha en el siguiente enlace:\n "+ enlaceRecuperacion +"\nEl enlace estará disponible durante 10 minutos.\n\nSaludos,\nEquipo de BabyTreasure");
+						"Hola "+usuario.getApodo()+",\n\nHemos recibido una solicitud para recuperar tu contraseña. Si no realizaste esta solicitud, puedes ignorar este correo.\nPara recuperar contraseña pincha en el siguiente enlace:\n "+ enlaceRecuperacion +"\nEl enlace estará disponible durante 10 minutos.\n\nSaludos,\nEquipo de BabyTreasure");
 
 				Transport.send(message);
 
