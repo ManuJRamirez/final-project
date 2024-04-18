@@ -48,13 +48,16 @@ public class WebSocketServiceImpl implements WebSocketService {
 		if (idChat != 0l) {
 			chats = chatsRepository.findById(idChat).orElseThrow(
 					() -> new CustomException("El chat con id " + idChat + " no se encuentra en la base de datos."));
+			chats.setFechaUltimoMensaje(new Date());
+			chats = chatsRepository.save(chats);
 		} else {
 			chats = new Chats();
 			chats.setIdAnuncio(idAnucio);
 			chats.setIdUsuario(idUsuario);
+			chats.setFechaUltimoMensaje(new Date());
+			chats = chatsRepository.save(chats);
+			session.getUserProperties().put("idChat", chats.getId());
 		}
-		chats.setFechaUltimoMensaje(new Date());
-		chats = chatsRepository.save(chats);
 
 		Mensaje mensaje = new Mensaje();
 		mensaje.setIdChat(chats.getId());
